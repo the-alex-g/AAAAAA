@@ -1,0 +1,35 @@
+[gd_scene load_steps=4 format=3 uid="uid://drs35ir7tme66"]
+
+[ext_resource type="Script" path="res://world/world.gd" id="1_2vkgl"]
+[ext_resource type="TileSet" uid="uid://qydm831wiegm" path="res://world/platform_tiles.tres" id="2_ujo6d"]
+[ext_resource type="PackedScene" uid="uid://cmiybl3yy4eh0" path="res://world/hud.tscn" id="3_5j0m0"]
+
+[node name="World" type="Node2D"]
+script = ExtResource("1_2vkgl")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+offset_right = 160.0
+offset_bottom = 160.0
+color = Color(0, 0, 0, 1)
+
+[node name="TileMap" type="TileMap" parent="."]
+texture_filter = 1
+tile_set = ExtResource("2_ujo6d")
+format = 2
+
+[node name="DeathZone" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionPolygon2D" parent="DeathZone"]
+position = Vector2(146, 275)
+polygon = PackedVector2Array(-309, -343, -156, -4, 136, -4, 283, -343, 160, 16, -191, 18)
+
+[node name="Players" type="Node2D" parent="."]
+
+[node name="HUD" parent="." instance=ExtResource("3_5j0m0")]
+round_length = 30
+
+[connection signal="player_color_changed" from="." to="HUD" method="_on_world_player_color_changed"]
+[connection signal="player_died" from="." to="HUD" method="_on_world_player_died"]
+[connection signal="player_joined" from="." to="HUD" method="_on_world_player_joined"]
+[connection signal="body_entered" from="DeathZone" to="." method="_on_death_zone_body_entered"]
+[connection signal="game_over" from="HUD" to="." method="_on_hud_game_over"]

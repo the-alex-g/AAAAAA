@@ -1,0 +1,91 @@
+[gd_scene load_steps=13 format=3 uid="uid://deus577w40nnq"]
+
+[ext_resource type="Script" path="res://totem/totem.gd" id="1_ew5gx"]
+[ext_resource type="Texture2D" uid="uid://d4jja650x5sm8" path="res://totem/totem.png" id="2_3kn7a"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_lw358"]
+size = Vector2(7, 12)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_edewc"]
+atlas = ExtResource("2_3kn7a")
+region = Rect2(8, 0, 8, 12)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_biq85"]
+atlas = ExtResource("2_3kn7a")
+region = Rect2(16, 0, 8, 12)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_r8lhv"]
+atlas = ExtResource("2_3kn7a")
+region = Rect2(0, 12, 8, 12)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_i5nfc"]
+atlas = ExtResource("2_3kn7a")
+region = Rect2(8, 12, 8, 12)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yff7e"]
+atlas = ExtResource("2_3kn7a")
+region = Rect2(16, 12, 8, 12)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_t63ct"]
+atlas = ExtResource("2_3kn7a")
+region = Rect2(0, 24, 8, 12)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_oapmr"]
+atlas = ExtResource("2_3kn7a")
+region = Rect2(8, 24, 8, 12)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_po7sf"]
+atlas = ExtResource("2_3kn7a")
+region = Rect2(0, 0, 8, 12)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_mvmii"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_edewc")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_biq85")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_r8lhv")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_i5nfc")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yff7e")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_t63ct")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_oapmr")
+}],
+"loop": false,
+"name": &"crumble",
+"speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_po7sf")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="Totem" type="Area2D"]
+script = ExtResource("1_ew5gx")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-0.5, -6)
+shape = SubResource("RectangleShape2D_lw358")
+
+[node name="Sprite" type="AnimatedSprite2D" parent="."]
+texture_filter = 1
+sprite_frames = SubResource("SpriteFrames_mvmii")
+autoplay = "default"
+offset = Vector2(0, -6)
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
