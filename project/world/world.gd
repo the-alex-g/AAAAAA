@@ -206,9 +206,6 @@ func _load_map()->void:
 	elif map_status == "load_specific":
 		map = file.get_value("maps", str(map_to_load))
 	
-	for cell in map:
-		_tile_map.set_cell(0, cell, 0, Vector2i.ZERO, 0)
-	
 	_tile_map.set_cells_terrain_connect(0, map, 0, 0)
 
 
