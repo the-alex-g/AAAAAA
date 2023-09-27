@@ -70,9 +70,27 @@ func _find_spawn_points()->void:
 				_spawn_points.append(Vector2i(tile_position.x * 8 + 4, tile_position.y * 8))
 
 
+func _get_spawn_point()->Vector2:
+	var occupied_points : Array[Vector2] = []
+	
+	for object in _player_container.get_children():
+		if object is Goblin:
+			var map_coords := _tile_map.local_to_map(object.position)
+			occupied_points.append(Vector2(map_coords.x * 8 + 4, map_coords.y * 8))
+	
+	if is_instance_valid(_totem):
+		occupied_points.append(_totem.position)
+	
+	var spawn_point : Vector2 = _spawn_points.pick_random()
+	while occupied_points.has(spawn_point):
+		spawn_point = _spawn_points.pick_random()
+	
+	return spawn_point
+
+
 func _instance_player(index:int)->void:
 	var player : Goblin = load("res://goblin/goblin.tscn").instantiate()
-	player.position = _spawn_points.pick_random()
+	player.position = _get_spawn_point()
 	player.index = index
 	# don't get this next one...
 	player.jump_strength = 150
@@ -155,7 +173,7 @@ func _reset()->void:
 
 func _respawn(player:Goblin)->void:
 	player.reset()
-	player.position = _spawn_points.pick_random()
+	player.position = _get_spawn_point()
 
 
 func _on_totem_used()->void:
@@ -169,7 +187,7 @@ func _spawn_totem()->void:
 		return
 	
 	_totem = load("res://totem/totem.tscn").instantiate()
-	_totem.position = _spawn_points.pick_random()
+	_totem.position = _get_spawn_point()
 	call_deferred("add_child", _totem)
 	_totem.used.connect(Callable(self, "_on_totem_used"))
 
@@ -228,7 +246,7 @@ func _on_hud_game_over()->void:
 			_respawn(player)
 	
 	if is_instance_valid(_totem):
-		_totem.position = _spawn_points.pick_random()
+		_totem.position = _get_spawn_point()
 	else:
 		_totem_spawn_timer.stop()
 		_spawn_totem()
