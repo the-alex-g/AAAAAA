@@ -1,7 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://cmiybl3yy4eh0"]
+[gd_scene load_steps=7 format=3 uid="uid://cmiybl3yy4eh0"]
 
 [ext_resource type="FontFile" uid="uid://qxaafrwhl7hn" path="res://fonts/Minecraft.ttf" id="1_07amw"]
 [ext_resource type="Script" path="res://world/hud.gd" id="1_qpx2s"]
+[ext_resource type="Shader" path="res://world/win_banner.gdshader" id="3_2xu23"]
+[ext_resource type="Texture2D" uid="uid://cin7tmvls32e3" path="res://world/win_head.png" id="4_wusmf"]
 
 [sub_resource type="Theme" id="Theme_3ho17"]
 default_font = ExtResource("1_07amw")
@@ -10,7 +12,16 @@ Label/colors/font_outline_color = Color(0, 0, 0, 1)
 Label/constants/line_spacing = 1
 Label/constants/outline_size = 1
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_dq20s"]
+shader = ExtResource("3_2xu23")
+shader_parameter/segments = 4.0
+shader_parameter/color1 = Vector4(1, 0, 0, 1)
+shader_parameter/color2 = Vector4(0, 1, 0, 1)
+shader_parameter/color3 = Vector4(0, 0, 1, 1)
+shader_parameter/color4 = Vector4(1, 1, 0, 1)
+
 [node name="HUD" type="CanvasLayer"]
+process_mode = 3
 script = ExtResource("1_qpx2s")
 
 [node name="Control" type="Control" parent="."]
@@ -38,12 +49,37 @@ anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -8.0
+offset_top = -26.0
 grow_horizontal = 2
 grow_vertical = 0
 theme_override_font_sizes/font_size = 16
 text = "60"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="GameOver" type="Control" parent="Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureRect" type="TextureRect" parent="Control/GameOver"]
+texture_filter = 1
+material = SubResource("ShaderMaterial_dq20s")
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -40.0
+offset_top = -40.0
+offset_right = 40.0
+offset_bottom = 40.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("4_wusmf")
 
 [connection signal="timeout" from="Control/GameTimer" to="." method="_on_game_timer_timeout"]

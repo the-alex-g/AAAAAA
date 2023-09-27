@@ -29,9 +29,11 @@ var _game_on := false
 var _used_colors := []
 var _spawn_points : Array[Vector2i] = []
 var _totem : Totem
+var _last_map_loaded := -1
 
 @onready var _player_container : Node2D = $Players
 @onready var _tile_map : TileMap = $TileMap
+@onready var _totem_spawn_timer : Timer = $TotemSpawnTimer
 
 
 func _ready()->void:
@@ -157,7 +159,8 @@ func _respawn(player:Goblin)->void:
 
 
 func _on_totem_used()->void:
-	await get_tree().create_timer(5.0 + randf() * 3.0).timeout
+	_totem_spawn_timer.start(5.0 + randf() * 3.0)
+	await _totem_spawn_timer.timeout
 	_spawn_totem()
 
 
@@ -201,7 +204,13 @@ func _load_map()->void:
 		var number_of_maps := 0
 		while file.has_section_key("maps", str(number_of_maps)):
 			number_of_maps += 1
-		map = file.get_value("maps", str(randi() % number_of_maps))
+		
+		var map_index := randi() % number_of_maps
+		while _last_map_loaded == map_index:
+			map_index = randi() % number_of_maps
+		
+		map = file.get_value("maps", str(map_index))
+		_last_map_loaded = map_index
 	
 	elif map_status == "load_specific":
 		map = file.get_value("maps", str(map_to_load))
@@ -220,3 +229,6 @@ func _on_hud_game_over()->void:
 	
 	if is_instance_valid(_totem):
 		_totem.position = _spawn_points.pick_random()
+	else:
+		_totem_spawn_timer.stop()
+		_spawn_totem()
