@@ -35,6 +35,7 @@ var _special_animation_playing := false
 @onready var _attack_sound : AudioStreamPlayer2D = $AttackSound
 @onready var _grow_sound : AudioStreamPlayer2D = $GrowSound
 @onready var _shrink_sound : AudioStreamPlayer2D = $ShrinkSound
+@onready var _hit_area : Area2D = $HitArea
 
 
 func _physics_process(delta:float)->void:
@@ -64,13 +65,32 @@ func _process_actions()->void:
 		velocity.y -= jump_strength
 	
 	if Input.is_action_pressed("punch_" + str(index)) and _can_attack:
-		_punch()
+		if Input.get_joy_axis(index, JOY_AXIS_LEFT_Y) < -0.3:
+			_uppercut()
+		else:
+			_punch()
 	
 	elif Input.is_action_pressed("kick_" + str(index)) and _can_attack and small:
 		_kick()
 	
 	elif Input.is_action_pressed("super_" + str(index)) and _can_attack and small:
 		_drop_bomb()
+
+
+func _uppercut()->void:
+	var target := _get_target(-PI / 2)
+	if target != null:
+		if small:
+			target.stun(punch_stun_duration)
+			target.knockback(kick_knockback, -PI / 2 + randf() - 0.5)
+		else:
+			target.stun(punch_stun_duration)
+			target.knockback(super_punch_knockback, -PI / 2 + randf() - 0.5)
+	
+	_sprite.play("uppercut_" + ("s" if small else "l"))
+	_play_attack_sound()
+	
+	_attack_cooldown(punch_cooldown)
 
 
 func _punch()->void:
@@ -109,23 +129,16 @@ func _drop_bomb()->void:
 	_attack_cooldown(super_cooldown)
 
 
-func _get_target()->Goblin:
-	var intersection := get_world_2d().direct_space_state.intersect_ray(_get_ray_parameters())
+func _get_target(angle := 0.0)->Goblin:
+	_hit_area.rotation = angle if angle != 0.0 else (PI if _sprite.scale.x == -1 else 0.0)
+	var potential_targets := _hit_area.get_overlapping_bodies()
 	
-	if intersection.size() > 0 and intersection.collider is Goblin:
-		return intersection.collider
+	for target in potential_targets:
+		if target is Goblin:
+			if target.index != index:
+				return target
 	
 	return null
-
-
-func _get_ray_parameters()->PhysicsRayQueryParameters2D:
-	var ray_parameters := PhysicsRayQueryParameters2D.new()
-	
-	ray_parameters.from = global_position + Vector2(0, -3)
-	ray_parameters.to = global_position + Vector2.RIGHT * attack_range * _sprite.scale.x
-	ray_parameters.exclude = [self]
-	
-	return ray_parameters
 
 
 func _attack_cooldown(duration:float)->void:
@@ -152,7 +165,8 @@ func _process_animation()->void:
 
 
 func stun(duration:float)->void:
-	_stun_time += duration * (1.0 if small else 0.5)
+	if small:
+		_stun_time = duration
 
 
 func knockback(strength:float, direction:float)->void:
