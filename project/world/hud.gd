@@ -7,31 +7,54 @@ signal game_over
 var _scores := {}
 var _score_labels := {}
 var _pending_new_round := false
+var _pause_menu_open := false
 
 @onready var _label_container : VBoxContainer = $Control/ScoreContainer
 @onready var _game_timer : Timer = $Control/GameTimer
 @onready var _game_time_label : Label = $Control/GameTimeLabel
 @onready var _game_over_overlay : Control = $Control/GameOver
 @onready var _game_over_banner : TextureRect = $Control/GameOver/TextureRect
+@onready var _pause_menu : Control = $Control/PauseMenu
 
 
 func _ready()->void:
 	_game_over_overlay.hide()
+	_pause_menu.hide()
 	_game_timer.start(round_length)
 
 
 func _input(event:InputEvent)->void:
-	if not _pending_new_round:
-		return
-	
 	if event is InputEventJoypadButton:
-		if event.pressed:
-			game_over.emit()
-			_reset()
+		if _pending_new_round:
+			if event.pressed:
+				game_over.emit()
+				_reset()
+		if _pause_menu_open and event.pressed:
+			match event.button_index:
+				JOY_BUTTON_BACK:
+					_close_pause_menu()
+				JOY_BUTTON_START:
+					get_tree().quit()
+		elif event.button_index == JOY_BUTTON_START and event.pressed:
+			_show_pause_menu()
 
 
 func _process(_delta:float)->void:
 	_game_time_label.text = str(round(_game_timer.time_left))
+
+
+func _show_pause_menu()->void:
+	_game_timer.paused = true
+	_pause_menu.show()
+	get_tree().paused = true
+	_pause_menu_open = true
+
+
+func _close_pause_menu()->void:
+	_game_timer.paused = false
+	_pause_menu.hide()
+	get_tree().paused = false
+	_pause_menu_open = false
 
 
 func _on_world_player_color_changed(index:int, color:Color)->void:
