@@ -108,11 +108,14 @@ func _instance_player(index:int)->void:
 
 
 func _change_player_color(index:int, direction:int)->void:
-	var player : Goblin
+	var player : Goblin = null
 	for goblin in _player_container.get_children():
 		if goblin.index == index:
 			player = goblin
 			break
+	
+	if player == null:
+		return
 	
 	var color_index := COLORS.keys().find(player.color1)
 	var new_color := Color(0, 0, 0, 0)
