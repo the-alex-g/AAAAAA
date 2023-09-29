@@ -285,9 +285,10 @@ animations = [{
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_yk8in"]
-size = Vector2(4, 4)
+size = Vector2(6, 4)
 
 [node name="Goblin" type="CharacterBody2D"]
+collision_layer = 2
 script = ExtResource("1_jriel")
 punch_stun_duration = 1.0
 jump_strength = 100
@@ -320,9 +321,11 @@ stream = ExtResource("7_yh87f")
 
 [node name="HitArea" type="Area2D" parent="."]
 position = Vector2(0, -3.5)
+collision_layer = 2
+collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="HitArea"]
-position = Vector2(4, 0)
+position = Vector2(3, 0)
 shape = SubResource("RectangleShape2D_yk8in")
 
 [connection signal="animation_finished" from="Sprite" to="." method="_on_sprite_animation_finished"]
