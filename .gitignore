@@ -1,2 +1,12 @@
-# Godot 4+ specific ignores
-.godot/
+*~
+build
+.directory
+project/.import
+project/logs
+project/savefile.dct
+
+# LMMS Backup files
+*mmpz.bak
+
+#godot 4-specific ignores
+project/.godot
