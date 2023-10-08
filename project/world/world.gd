@@ -25,7 +25,6 @@ const CONFIG_PATH := "res://config.cfg"
 
 var player_count := 0
 var _players_added := []
-var _game_on := false
 var _used_colors := []
 var _spawn_points : Array[Vector2i] = []
 var _totem : Totem
@@ -155,23 +154,8 @@ func _create_inputs(player_index:int)->void:
 
 
 func _on_death_zone_body_entered(body:Goblin)->void:
-	if _game_on:
-		body.disabled = true
-		player_count -= 1
-		if player_count <= 1:
-			_end_game()
-	else:
-		_respawn(body)
+	_respawn(body)
 	player_died.emit(body.index)
-
-
-func _end_game()->void:
-	_reset()
-
-
-func _reset()->void:
-	for player in _player_container.get_children():
-		_respawn(player)
 
 
 func _respawn(player:Goblin)->void:
@@ -239,7 +223,7 @@ func _load_map()->void:
 	_tile_map.set_cells_terrain_connect(0, map, 0, 0)
 
 
-func _on_hud_game_over()->void:
+func _on_hud_round_over()->void:
 	if map_status == "load":
 		_load_map()
 		_find_spawn_points()
@@ -247,6 +231,8 @@ func _on_hud_game_over()->void:
 	for player in _player_container.get_children():
 		if player is Goblin: # there's a chance that bombs could be in there.
 			_respawn(player)
+		if player is Bomb:
+			player.queue_free()
 	
 	if is_instance_valid(_totem):
 		_totem.position = _get_spawn_point()
