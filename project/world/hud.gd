@@ -13,6 +13,7 @@ var _pause_menu_open := false
 var _total_rounds := -1
 var _rounds_elapsed := 0
 var _main_menu_open := false
+var _control_menu_open := false
 
 @onready var _label_container : VBoxContainer = $Control/ScoreContainer
 @onready var _game_timer : Timer = $Control/GameTimer
@@ -21,8 +22,11 @@ var _main_menu_open := false
 @onready var _game_over_banner : TextureRect = $Control/GameOver/TextureRect
 @onready var _game_over_label : Label = $Control/GameOver/Label
 @onready var _pause_menu : Control = $Control/PauseMenu
-@onready var _game_length_label : Label = $Control/MainMenu/GameLengthLabel
+@onready var _game_length_label : Label = $Control/MainMenu/GridContainer/GameLengthLabel
 @onready var _main_menu : ColorRect = $Control/MainMenu
+@onready var _main_menu_options : GridContainer = $Control/MainMenu/GridContainer
+@onready var _pause_menu_options : GridContainer = $Control/PauseMenu/GridContainer
+@onready var _controls : VBoxContainer = $Control/ControlInfo
 
 
 func _ready()->void:
@@ -46,13 +50,31 @@ func _input(event:InputEvent)->void:
 		elif _pause_menu_open and event.pressed:
 			match event.button_index:
 				JOY_BUTTON_B:
-					_close_pause_menu()
+					if not _control_menu_open:
+						_close_pause_menu()
 				JOY_BUTTON_BACK:
-					_close_pause_menu()
-					_open_main_menu()
+					if not _control_menu_open:
+						_close_pause_menu()
+						_open_main_menu()
+				JOY_BUTTON_Y:
+					_toggle_controls()
 		
 		elif event.button_index == JOY_BUTTON_BACK and event.pressed:
 			_show_pause_menu()
+
+
+func _toggle_controls()->void:
+	_control_menu_open = not _control_menu_open
+	if _control_menu_open:
+		_controls.show()
+		if _main_menu_open:
+			_main_menu_options.hide()
+		elif _pause_menu_open:
+			_pause_menu_options.hide()
+	else:
+		_controls.hide()
+		_main_menu_options.show()
+		_pause_menu_options.show()
 
 
 func _process(_delta:float)->void:
@@ -61,15 +83,18 @@ func _process(_delta:float)->void:
 
 func _resolve_main_menu_event(event:InputEventJoypadButton)->void:
 	if event.pressed:
-		match event.button_index:
-			JOY_BUTTON_DPAD_UP:
-				_increase_game_length()
-			JOY_BUTTON_DPAD_DOWN:
-				_decrease_game_length()
-			JOY_BUTTON_START, JOY_BUTTON_A:
-				_start_game()
-			JOY_BUTTON_BACK:
-				get_tree().quit()
+		if not _control_menu_open:
+			match event.button_index:
+				JOY_BUTTON_DPAD_UP:
+					_increase_game_length()
+				JOY_BUTTON_DPAD_DOWN:
+					_decrease_game_length()
+				JOY_BUTTON_START:
+					_start_game()
+				JOY_BUTTON_BACK:
+					get_tree().quit()
+		if event.button_index == JOY_BUTTON_Y:
+			_toggle_controls()
 
 
 func _open_main_menu()->void:
