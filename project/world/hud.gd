@@ -152,8 +152,9 @@ func _close_pause_menu()->void:
 	_pause_menu_open = false
 
 
-func _on_world_player_color_changed(index:int, color:Color)->void:
+func _on_world_player_color_changed(index:int, color:Color, former_color:Color)->void:
 	_update_label_color(index, color)
+	_update_gem_colors(former_color, color)
 
 
 func _on_world_player_died(index:int)->void:
@@ -165,6 +166,18 @@ func _on_world_player_joined(index:int, color:Color)->void:
 	_scores[index] = 0
 	_wins[index] = 0
 	_add_score_label(index, color)
+
+
+func _update_gem_colors(from:Color, to:Color)->void:
+	if from == Color(0.0, 0.0, 0.0, 0.0):
+		return
+	
+	for child in $Control/GameOver/GridContainer.get_children():
+		for i in 4:
+			if child.material.get_shader_parameter("color" + str(i + 1)) != null:
+				var color:Color = child.material.get_shader_parameter("color" + str(i + 1))
+				if color == from:
+					child.material.set_shader_parameter("color" + str(i + 1), to)
 
 
 func _add_score_label(index:int, color:Color)->void:
@@ -235,11 +248,28 @@ func _end_round()->void:
 	get_tree().paused = true
 	_game_over_overlay.show()
 	
+	_add_win_gem()
 	_load_banner_shader(_get_winner_colors())
 	
 	await get_tree().create_timer(1.0).timeout
 	
 	_pending_new_round = true
+
+
+func _add_win_gem() -> void:
+	var material := ShaderMaterial.new()
+	material.shader = load("res://world/win_gem.gdshader")
+	
+	var winner_colors := _get_winner_colors()
+	material.set_shader_parameter("segments", winner_colors.size())
+	for color in winner_colors:
+		material.set_shader_parameter("color" + str(winner_colors.find(color) + 1), color)
+	
+	var win_gem := TextureRect.new()
+	win_gem.texture = load("res://world/win_gem.png")
+	win_gem.material = material
+	
+	$Control/GameOver/GridContainer.add_child(win_gem)
 
 
 func _load_banner_shader(winner_colors:Array[Color])->void:

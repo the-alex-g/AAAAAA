@@ -1,7 +1,7 @@
 extends Node2D
 
 signal player_joined(index, color)
-signal player_color_changed(index, color)
+signal player_color_changed(index, color, original_color)
 signal player_died(index)
 
 
@@ -116,6 +116,7 @@ func _change_player_color(index:int, direction:int)->void:
 	if player == null:
 		return
 	
+	var original_color = player.color1
 	var color_index := COLORS.keys().find(player.color1)
 	var new_color := Color(0, 0, 0, 0)
 	while new_color == Color(0, 0, 0, 0) or _used_colors.has(new_color):
@@ -128,7 +129,7 @@ func _change_player_color(index:int, direction:int)->void:
 	player.color1 = new_color
 	player.color2 = COLORS[new_color]
 	
-	player_color_changed.emit(index, new_color)
+	player_color_changed.emit(index, new_color, original_color)
 
 
 func _add_player(index:int)->void:
