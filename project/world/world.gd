@@ -100,6 +100,7 @@ func _instance_player(index:int)->void:
 	_used_colors.append(player.color1)
 	
 	player.color2 = COLORS[player.color1]
+	player.died.connect(_on_goblin_died.bind(player))
 	
 	_player_container.add_child(player)
 	
@@ -154,7 +155,7 @@ func _create_inputs(player_index:int)->void:
 		InputMap.action_add_event(action_name + "_" + str(player_index), event)
 
 
-func _on_death_zone_body_entered(body:Goblin)->void:
+func _on_goblin_died(body:Goblin)->void:
 	_respawn(body)
 	player_died.emit(body.index)
 

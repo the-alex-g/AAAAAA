@@ -12,14 +12,6 @@ offset_right = 160.0
 offset_bottom = 160.0
 color = Color(0, 0, 0, 1)
 
-[node name="DeathZone" type="Area2D" parent="."]
-collision_layer = 2
-collision_mask = 2
-
-[node name="CollisionShape2D" type="CollisionPolygon2D" parent="DeathZone"]
-position = Vector2(146, 275)
-polygon = PackedVector2Array(-309, -343, -156, -4, 136, -4, 283, -343, 160, 16, -191, 18)
-
 [node name="TileMap" type="TileMap" parent="."]
 texture_filter = 1
 tile_set = ExtResource("2_ujo6d")
@@ -28,7 +20,6 @@ format = 2
 [node name="Players" type="Node2D" parent="."]
 
 [node name="HUD" parent="." instance=ExtResource("3_5j0m0")]
-round_length = 2
 
 [node name="TotemSpawnTimer" type="Timer" parent="."]
 one_shot = true
@@ -36,5 +27,4 @@ one_shot = true
 [connection signal="player_color_changed" from="." to="HUD" method="_on_world_player_color_changed"]
 [connection signal="player_died" from="." to="HUD" method="_on_world_player_died"]
 [connection signal="player_joined" from="." to="HUD" method="_on_world_player_joined"]
-[connection signal="body_entered" from="DeathZone" to="." method="_on_death_zone_body_entered"]
 [connection signal="round_over" from="HUD" to="." method="_on_hud_round_over"]

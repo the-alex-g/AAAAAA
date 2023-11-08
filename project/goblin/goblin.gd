@@ -1,6 +1,8 @@
 class_name Goblin
 extends CharacterBody2D
 
+signal died
+
 const GRAVITY := 8.0
 
 @export_group("attack effects")
@@ -53,6 +55,9 @@ func _physics_process(delta:float)->void:
 	move_and_slide()
 	
 	position.x = fposmod(position.x, 160)
+	
+	if position.y >= 200.0:
+		died.emit()
 
 
 func _process_actions()->void:
