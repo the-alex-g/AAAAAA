@@ -1,9 +1,10 @@
-[gd_scene load_steps=15 format=3 uid="uid://cmiybl3yy4eh0"]
+[gd_scene load_steps=16 format=3 uid="uid://cmiybl3yy4eh0"]
 
 [ext_resource type="Script" path="res://world/hud.gd" id="1_qpx2s"]
 [ext_resource type="Theme" uid="uid://b6d3ukelyderc" path="res://world/theme.tres" id="2_dkdf0"]
 [ext_resource type="Shader" path="res://world/win_banner.gdshader" id="3_2xu23"]
 [ext_resource type="Texture2D" uid="uid://cin7tmvls32e3" path="res://world/win_head.png" id="4_wusmf"]
+[ext_resource type="StyleBox" uid="uid://c85qc3gb57jdf" path="res://world/info_background_stylebox.tres" id="5_4ux3p"]
 [ext_resource type="Texture2D" uid="uid://47rfdws3a60" path="res://world/button_images.png" id="5_da07e"]
 [ext_resource type="PackedScene" uid="uid://doshxelwyf2lk" path="res://world/control_info.tscn" id="6_v4l26"]
 
@@ -153,44 +154,48 @@ theme_override_font_sizes/font_size = 16
 text = "Paused"
 horizontal_alignment = 1
 
-[node name="GridContainer" type="GridContainer" parent="Control/PauseMenu"]
+[node name="PanelContainer" type="PanelContainer" parent="Control/PauseMenu"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -27.5
-offset_top = -11.0
-offset_right = 27.5
-offset_bottom = 11.0
+offset_left = -36.5
+offset_top = -20.0
+offset_right = 36.5
+offset_bottom = 20.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_styles/panel = ExtResource("5_4ux3p")
+
+[node name="GridContainer" type="GridContainer" parent="Control/PauseMenu/PanelContainer"]
+layout_mode = 2
 columns = 2
 
-[node name="BRect" type="TextureRect" parent="Control/PauseMenu/GridContainer"]
+[node name="BRect" type="TextureRect" parent="Control/PauseMenu/PanelContainer/GridContainer"]
 layout_mode = 2
 texture = SubResource("AtlasTexture_3m6h1")
 
-[node name="Label" type="Label" parent="Control/PauseMenu/GridContainer"]
+[node name="Label" type="Label" parent="Control/PauseMenu/PanelContainer/GridContainer"]
 layout_mode = 2
 text = "back"
 horizontal_alignment = 1
 
-[node name="BackRect" type="TextureRect" parent="Control/PauseMenu/GridContainer"]
+[node name="BackRect" type="TextureRect" parent="Control/PauseMenu/PanelContainer/GridContainer"]
 layout_mode = 2
 texture = SubResource("AtlasTexture_n5e46")
 
-[node name="Label2" type="Label" parent="Control/PauseMenu/GridContainer"]
+[node name="Label2" type="Label" parent="Control/PauseMenu/PanelContainer/GridContainer"]
 layout_mode = 2
 text = "main menu"
 horizontal_alignment = 1
 
-[node name="ControlRect" type="TextureRect" parent="Control/PauseMenu/GridContainer"]
+[node name="ControlRect" type="TextureRect" parent="Control/PauseMenu/PanelContainer/GridContainer"]
 layout_mode = 2
 texture = SubResource("AtlasTexture_iw713")
 
-[node name="ControlLabel" type="Label" parent="Control/PauseMenu/GridContainer"]
+[node name="ControlLabel" type="Label" parent="Control/PauseMenu/PanelContainer/GridContainer"]
 layout_mode = 2
 text = "toggle controls"
 horizontal_alignment = 1

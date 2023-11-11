@@ -1,5 +1,6 @@
-[gd_scene load_steps=11 format=3 uid="uid://doshxelwyf2lk"]
+[gd_scene load_steps=12 format=3 uid="uid://doshxelwyf2lk"]
 
+[ext_resource type="StyleBox" uid="uid://c85qc3gb57jdf" path="res://world/info_background_stylebox.tres" id="1_fppgx"]
 [ext_resource type="Theme" uid="uid://b6d3ukelyderc" path="res://world/theme.tres" id="1_s65xg"]
 [ext_resource type="Texture2D" uid="uid://47rfdws3a60" path="res://world/button_images.png" id="2_w61qk"]
 
@@ -35,99 +36,103 @@ region = Rect2(8, 16, 8, 8)
 atlas = ExtResource("2_w61qk")
 region = Rect2(0, 16, 8, 8)
 
-[node name="ControlInfo" type="VBoxContainer"]
+[node name="ControlInfo" type="PanelContainer"]
 offset_right = 75.0
-offset_bottom = 74.0
+offset_bottom = 87.0
+theme_override_styles/panel = ExtResource("1_fppgx")
 
-[node name="SingleInput" type="GridContainer" parent="."]
+[node name="GridContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="SingleInput" type="GridContainer" parent="GridContainer"]
 texture_filter = 1
 layout_mode = 2
 theme = ExtResource("1_s65xg")
 columns = 2
 
-[node name="TextureRect" type="TextureRect" parent="SingleInput"]
+[node name="TextureRect" type="TextureRect" parent="GridContainer/SingleInput"]
 layout_mode = 2
 texture = SubResource("AtlasTexture_nhivt")
 stretch_mode = 3
 
-[node name="Label" type="Label" parent="SingleInput"]
+[node name="Label" type="Label" parent="GridContainer/SingleInput"]
 layout_mode = 2
 text = "jump / join"
 horizontal_alignment = 1
 
-[node name="TextureRect2" type="TextureRect" parent="SingleInput"]
+[node name="TextureRect2" type="TextureRect" parent="GridContainer/SingleInput"]
 layout_mode = 2
 texture = SubResource("AtlasTexture_6jayo")
 stretch_mode = 3
 
-[node name="Label2" type="Label" parent="SingleInput"]
+[node name="Label2" type="Label" parent="GridContainer/SingleInput"]
 layout_mode = 2
 text = "kick"
 horizontal_alignment = 1
 
-[node name="TextureRect3" type="TextureRect" parent="SingleInput"]
+[node name="TextureRect3" type="TextureRect" parent="GridContainer/SingleInput"]
 layout_mode = 2
 texture = SubResource("AtlasTexture_pu231")
 stretch_mode = 3
 
-[node name="Label3" type="Label" parent="SingleInput"]
+[node name="Label3" type="Label" parent="GridContainer/SingleInput"]
 layout_mode = 2
 text = "punch"
 horizontal_alignment = 1
 
-[node name="TextureRect4" type="TextureRect" parent="SingleInput"]
+[node name="TextureRect4" type="TextureRect" parent="GridContainer/SingleInput"]
 layout_mode = 2
 texture = SubResource("AtlasTexture_4tjpc")
 stretch_mode = 3
 
-[node name="Label4" type="Label" parent="SingleInput"]
+[node name="Label4" type="Label" parent="GridContainer/SingleInput"]
 layout_mode = 2
 text = "drop bomb"
 horizontal_alignment = 1
 
-[node name="TextureRect5" type="TextureRect" parent="SingleInput"]
+[node name="TextureRect5" type="TextureRect" parent="GridContainer/SingleInput"]
 layout_mode = 2
 texture = SubResource("AtlasTexture_g6fi1")
 stretch_mode = 3
 
-[node name="Label5" type="Label" parent="SingleInput"]
+[node name="Label5" type="Label" parent="GridContainer/SingleInput"]
 layout_mode = 2
 text = "move"
 horizontal_alignment = 1
 
-[node name="DoubleInput" type="GridContainer" parent="."]
+[node name="DoubleInput" type="GridContainer" parent="GridContainer"]
 texture_filter = 1
 layout_mode = 2
 theme = ExtResource("1_s65xg")
 columns = 3
 
-[node name="TextureRect3" type="TextureRect" parent="DoubleInput"]
+[node name="TextureRect3" type="TextureRect" parent="GridContainer/DoubleInput"]
 layout_mode = 2
 texture = SubResource("AtlasTexture_pu231")
 stretch_mode = 3
 
-[node name="TextureRect4" type="TextureRect" parent="DoubleInput"]
+[node name="TextureRect4" type="TextureRect" parent="GridContainer/DoubleInput"]
 layout_mode = 2
 size_flags_horizontal = 0
 texture = SubResource("AtlasTexture_hbyuv")
 stretch_mode = 3
 
-[node name="Label3" type="Label" parent="DoubleInput"]
+[node name="Label3" type="Label" parent="GridContainer/DoubleInput"]
 layout_mode = 2
 text = "uppercut"
 horizontal_alignment = 1
 
-[node name="TextureRect6" type="TextureRect" parent="DoubleInput"]
+[node name="TextureRect6" type="TextureRect" parent="GridContainer/DoubleInput"]
 layout_mode = 2
 texture = SubResource("AtlasTexture_rk0ao")
 stretch_mode = 3
 
-[node name="TextureRect7" type="TextureRect" parent="DoubleInput"]
+[node name="TextureRect7" type="TextureRect" parent="GridContainer/DoubleInput"]
 layout_mode = 2
 texture = SubResource("AtlasTexture_p7bpi")
 stretch_mode = 3
 
-[node name="Label6" type="Label" parent="DoubleInput"]
+[node name="Label6" type="Label" parent="GridContainer/DoubleInput"]
 layout_mode = 2
 text = "change color"
 horizontal_alignment = 1

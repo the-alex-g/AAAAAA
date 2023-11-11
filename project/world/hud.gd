@@ -25,8 +25,8 @@ var _control_menu_open := false
 @onready var _game_length_label : Label = $Control/MainMenu/GridContainer/GameLengthLabel
 @onready var _main_menu : ColorRect = $Control/MainMenu
 @onready var _main_menu_options : GridContainer = $Control/MainMenu/GridContainer
-@onready var _pause_menu_options : GridContainer = $Control/PauseMenu/GridContainer
-@onready var _controls : VBoxContainer = $Control/ControlInfo
+@onready var _pause_menu_options : PanelContainer = $Control/PauseMenu/PanelContainer
+@onready var _controls : PanelContainer = $Control/ControlInfo
 
 
 func _ready()->void:
@@ -52,6 +52,7 @@ func _input(event:InputEvent)->void:
 				JOY_BUTTON_B:
 					if not _control_menu_open:
 						_close_pause_menu()
+					
 				JOY_BUTTON_BACK:
 					if not _control_menu_open:
 						_close_pause_menu()
@@ -61,6 +62,9 @@ func _input(event:InputEvent)->void:
 		
 		elif event.button_index == JOY_BUTTON_BACK and event.pressed:
 			_show_pause_menu()
+		
+		if _control_menu_open and event.pressed and event.button_index != JOY_BUTTON_Y:
+			_toggle_controls()
 
 
 func _toggle_controls()->void:
