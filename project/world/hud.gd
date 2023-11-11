@@ -1,6 +1,7 @@
 extends CanvasLayer
 
 signal round_over
+signal reset_board
 
 @export var round_length := 30
 
@@ -27,6 +28,7 @@ var _control_menu_open := false
 @onready var _main_menu_options : GridContainer = $Control/MainMenu/GridContainer
 @onready var _pause_menu_options : PanelContainer = $Control/PauseMenu/PanelContainer
 @onready var _controls : PanelContainer = $Control/ControlInfo
+@onready var _win_gem_container : GridContainer = $Control/GameOver/GridContainer
 
 
 func _ready()->void:
@@ -108,6 +110,9 @@ func _resolve_main_menu_event(event:InputEventJoypadButton)->void:
 
 func _open_main_menu()->void:
 	get_tree().paused = true
+	_clear_win_gems()
+	_clear_score_labels()
+	_scores.clear()
 	
 	_game_over_overlay.hide()
 	_pause_menu.hide()
@@ -117,6 +122,17 @@ func _open_main_menu()->void:
 	_main_menu.show()
 	
 	_update_game_length_label()
+
+
+func _clear_win_gems()->void:
+	for gem in _win_gem_container.get_children():
+		gem.queue_free()
+
+
+func _clear_score_labels()->void:
+	_score_labels.clear()
+	for label in _label_container.get_children():
+		label.queue_free()
 
 
 func _increase_game_length()->void:
@@ -143,6 +159,7 @@ func _start_game()->void:
 	_main_menu_open = false
 	_main_menu.hide()
 	_rounds_elapsed = 0
+	reset_board.emit()
 	_reset_wins()
 	_reset_round()
 
@@ -226,6 +243,8 @@ func _log_wins()->void:
 
 func _end_game()->void:
 	get_tree().paused = true
+	_add_win_gem()
+	
 	_game_over_overlay.show()
 	_game_over_label.show()
 	
@@ -249,8 +268,7 @@ func _end_game()->void:
 
 
 func _reset_wins()->void:
-	for player in _scores:
-		_wins[player] = 0
+	_wins.clear()
 
 
 func _end_round()->void:
@@ -278,7 +296,7 @@ func _add_win_gem() -> void:
 	win_gem.texture = load("res://world/win_gem.png")
 	win_gem.material = material
 	
-	$Control/GameOver/GridContainer.add_child(win_gem)
+	_win_gem_container.add_child(win_gem)
 
 
 func _load_banner_shader(winner_colors:Array[Color])->void:

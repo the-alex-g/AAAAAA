@@ -239,3 +239,11 @@ func _on_hud_round_over()->void:
 	else:
 		_totem_spawn_timer.stop()
 		_spawn_totem()
+
+
+func _on_hud_reset_board()->void:
+	_players_added.clear()
+	player_count = 0
+	_used_colors.clear()
+	for player in _player_container.get_children():
+		player.queue_free()

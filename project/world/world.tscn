@@ -27,4 +27,5 @@ one_shot = true
 [connection signal="player_color_changed" from="." to="HUD" method="_on_world_player_color_changed"]
 [connection signal="player_died" from="." to="HUD" method="_on_world_player_died"]
 [connection signal="player_joined" from="." to="HUD" method="_on_world_player_joined"]
+[connection signal="reset_board" from="HUD" to="." method="_on_hud_reset_board"]
 [connection signal="round_over" from="HUD" to="." method="_on_hud_round_over"]
