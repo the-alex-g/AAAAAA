@@ -36,8 +36,6 @@ var _last_map_loaded := -1
 
 
 func _ready()->void:
-	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
-	
 	if map_status == "save":
 		_save_map()
 	elif map_status == "load" or map_status == "load_specific":

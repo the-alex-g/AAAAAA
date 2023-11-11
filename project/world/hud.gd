@@ -93,6 +93,11 @@ func _resolve_main_menu_event(event:InputEventJoypadButton)->void:
 					_start_game()
 				JOY_BUTTON_BACK:
 					get_tree().quit()
+				JOY_BUTTON_X:
+					if DisplayServer.window_get_mode() == DisplayServer.WINDOW_MODE_WINDOWED:
+						DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
+					else:
+						DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
 		if event.button_index == JOY_BUTTON_Y:
 			_toggle_controls()
 

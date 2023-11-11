@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://cmiybl3yy4eh0"]
+[gd_scene load_steps=15 format=3 uid="uid://cmiybl3yy4eh0"]
 
 [ext_resource type="Script" path="res://world/hud.gd" id="1_qpx2s"]
 [ext_resource type="Theme" uid="uid://b6d3ukelyderc" path="res://world/theme.tres" id="2_dkdf0"]
@@ -38,6 +38,10 @@ region = Rect2(8, 8, 8, 8)
 [sub_resource type="AtlasTexture" id="AtlasTexture_c4i5k"]
 atlas = ExtResource("5_da07e")
 region = Rect2(16, 8, 8, 8)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rkxy7"]
+atlas = ExtResource("5_da07e")
+region = Rect2(0, 8, 8, 8)
 
 [node name="HUD" type="CanvasLayer"]
 process_mode = 3
@@ -278,6 +282,15 @@ layout_mode = 2
 text = "toggle controls"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="FullscreenRect" type="TextureRect" parent="Control/MainMenu/GridContainer"]
+layout_mode = 2
+texture = SubResource("AtlasTexture_rkxy7")
+
+[node name="FullscreenLabel" type="Label" parent="Control/MainMenu/GridContainer"]
+layout_mode = 2
+text = "fullscreen"
+horizontal_alignment = 1
 
 [node name="ControlInfo" parent="Control" instance=ExtResource("6_v4l26")]
 visible = false
