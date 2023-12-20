@@ -1,0 +1,140 @@
+[gd_scene load_steps=10 format=3 uid="uid://d0bstd4h3spyx"]
+
+[ext_resource type="Texture2D" uid="uid://47rfdws3a60" path="res://world/button_images.png" id="1_1tl0d"]
+[ext_resource type="Theme" uid="uid://b6d3ukelyderc" path="res://world/theme.tres" id="1_ikwkh"]
+[ext_resource type="Script" path="res://menu/main_menu.gd" id="2_c27fn"]
+[ext_resource type="PackedScene" uid="uid://doshxelwyf2lk" path="res://world/control_info.tscn" id="4_xroms"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jko3u"]
+atlas = ExtResource("1_1tl0d")
+region = Rect2(16, 16, 8, 8)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0ssq2"]
+atlas = ExtResource("1_1tl0d")
+region = Rect2(8, 8, 8, 8)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_c4i5k"]
+atlas = ExtResource("1_1tl0d")
+region = Rect2(16, 8, 8, 8)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_iw713"]
+atlas = ExtResource("1_1tl0d")
+region = Rect2(16, 0, 8, 8)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rkxy7"]
+atlas = ExtResource("1_1tl0d")
+region = Rect2(0, 8, 8, 8)
+
+[node name="MainMenu" type="ColorRect"]
+texture_filter = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_ikwkh")
+color = Color(0, 0, 0, 1)
+script = ExtResource("2_c27fn")
+
+[node name="TitleContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 50.0
+grow_horizontal = 2
+alignment = 1
+
+[node name="Title" type="Label" parent="TitleContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "AAAAAA!"
+horizontal_alignment = 1
+
+[node name="Title2" type="Label" parent="TitleContainer"]
+layout_mode = 2
+text = "a goblin saga"
+horizontal_alignment = 1
+
+[node name="MainMenuOptions" type="GridContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -35.0
+offset_top = -14.5
+offset_right = 35.0
+offset_bottom = 46.5
+grow_horizontal = 2
+grow_vertical = 2
+columns = 2
+
+[node name="DPadRect" type="TextureRect" parent="MainMenuOptions"]
+layout_mode = 2
+texture = SubResource("AtlasTexture_jko3u")
+expand_mode = 2
+
+[node name="GameLengthLabel" type="Label" parent="MainMenuOptions"]
+layout_mode = 2
+text = "indefinite"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="StartRect" type="TextureRect" parent="MainMenuOptions"]
+layout_mode = 2
+texture = SubResource("AtlasTexture_0ssq2")
+expand_mode = 2
+
+[node name="StartGameLabel" type="Label" parent="MainMenuOptions"]
+layout_mode = 2
+text = "play!"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BackRect" type="TextureRect" parent="MainMenuOptions"]
+layout_mode = 2
+texture = SubResource("AtlasTexture_c4i5k")
+expand_mode = 2
+
+[node name="QuitLabel" type="Label" parent="MainMenuOptions"]
+layout_mode = 2
+text = "quit"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ControlRect" type="TextureRect" parent="MainMenuOptions"]
+layout_mode = 2
+texture = SubResource("AtlasTexture_iw713")
+expand_mode = 2
+
+[node name="ControlLabel" type="Label" parent="MainMenuOptions"]
+layout_mode = 2
+text = "toggle controls"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="FullscreenRect" type="TextureRect" parent="MainMenuOptions"]
+layout_mode = 2
+texture = SubResource("AtlasTexture_rkxy7")
+expand_mode = 2
+
+[node name="FullscreenLabel" type="Label" parent="MainMenuOptions"]
+layout_mode = 2
+text = "fullscreen"
+horizontal_alignment = 1
+
+[node name="ControlInfo" parent="." instance=ExtResource("4_xroms")]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -39.5
+offset_top = -22.5
+offset_right = 39.5
+offset_bottom = 68.5
+grow_horizontal = 2
+grow_vertical = 2
