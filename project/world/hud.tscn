@@ -1,20 +1,11 @@
-[gd_scene load_steps=16 format=3 uid="uid://cmiybl3yy4eh0"]
+[gd_scene load_steps=14 format=3 uid="uid://cmiybl3yy4eh0"]
 
 [ext_resource type="Script" path="res://world/hud.gd" id="1_qpx2s"]
 [ext_resource type="Theme" uid="uid://b6d3ukelyderc" path="res://world/theme.tres" id="2_dkdf0"]
-[ext_resource type="Shader" path="res://world/win_banner.gdshader" id="3_2xu23"]
-[ext_resource type="Texture2D" uid="uid://cin7tmvls32e3" path="res://world/win_head.png" id="4_wusmf"]
+[ext_resource type="PackedScene" uid="uid://d17boi01qtpj2" path="res://menu/round_over.tscn" id="3_mas8i"]
 [ext_resource type="StyleBox" uid="uid://c85qc3gb57jdf" path="res://world/info_background_stylebox.tres" id="5_4ux3p"]
 [ext_resource type="Texture2D" uid="uid://47rfdws3a60" path="res://world/button_images.png" id="5_da07e"]
 [ext_resource type="PackedScene" uid="uid://doshxelwyf2lk" path="res://world/control_info.tscn" id="6_v4l26"]
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_dq20s"]
-shader = ExtResource("3_2xu23")
-shader_parameter/segments = 1
-shader_parameter/color1 = Vector4(1, 0, 0, 1)
-shader_parameter/color2 = Vector4(0, 1, 0, 1)
-shader_parameter/color3 = Vector4(0, 0, 1, 1)
-shader_parameter/color4 = Vector4(1, 1, 0, 1)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_3m6h1"]
 atlas = ExtResource("5_da07e")
@@ -81,56 +72,8 @@ text = "60"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="GameOver" type="Control" parent="Control"]
+[node name="RoundOver" parent="Control" instance=ExtResource("3_mas8i")]
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="TextureRect" type="TextureRect" parent="Control/GameOver"]
-texture_filter = 1
-material = SubResource("ShaderMaterial_dq20s")
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -40.0
-offset_top = -40.0
-offset_right = 40.0
-offset_bottom = 40.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("4_wusmf")
-
-[node name="Label" type="Label" parent="Control/GameOver"]
-visible = false
-texture_filter = 1
-layout_mode = 1
-anchors_preset = 10
-anchor_right = 1.0
-offset_top = 8.0
-offset_bottom = 25.0
-grow_horizontal = 2
-theme_override_colors/font_color = Color(0.996078, 0.996078, 0.996078, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 4
-theme_override_font_sizes/font_size = 16
-text = "Game Over"
-horizontal_alignment = 1
-
-[node name="GridContainer" type="GridContainer" parent="Control/GameOver"]
-texture_filter = 1
-layout_mode = 1
-anchors_preset = 11
-anchor_left = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 0
-grow_vertical = 2
 
 [node name="PauseMenu" type="Control" parent="Control"]
 visible = false
