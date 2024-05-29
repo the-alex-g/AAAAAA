@@ -172,7 +172,7 @@ func _close_pause_menu()->void:
 
 func _on_world_player_color_changed(index:int, color:Color, former_color:Color)->void:
 	_update_label_color(index, color)
-	_update_gem_colors(former_color, color)
+	_round_over_overlay.update_gem_colors(former_color, color)
 
 
 func _on_world_player_died(index:int)->void:
@@ -184,18 +184,6 @@ func _on_world_player_joined(index:int, color:Color)->void:
 	_scores[index] = 0
 	_wins[index] = 0
 	_add_score_label(index, color)
-
-
-func _update_gem_colors(from:Color, to:Color)->void:
-	if from == Color(0.0, 0.0, 0.0, 0.0):
-		return
-	
-	for child in $Control/GameOver/GridContainer.get_children():
-		for i in 4:
-			if child.material.get_shader_parameter("color" + str(i + 1)) != null:
-				var color:Color = child.material.get_shader_parameter("color" + str(i + 1))
-				if color == from:
-					child.material.set_shader_parameter("color" + str(i + 1), to)
 
 
 func _add_score_label(index:int, color:Color)->void:

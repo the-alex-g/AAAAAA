@@ -1,4 +1,4 @@
-[gd_scene load_steps=42 format=3 uid="uid://j8ikoqaqkdf5"]
+[gd_scene load_steps=44 format=3 uid="uid://j8ikoqaqkdf5"]
 
 [ext_resource type="Script" path="res://goblin/goblin.gd" id="1_jriel"]
 [ext_resource type="Shader" path="res://goblin/goblin.gdshader" id="2_8cho7"]
@@ -7,9 +7,14 @@
 [ext_resource type="AudioStream" uid="uid://byupqoyrcridr" path="res://sfx/attack.wav" id="5_inssh"]
 [ext_resource type="AudioStream" uid="uid://dust2g1q3dvw5" path="res://sfx/get_big.wav" id="6_qsw7g"]
 [ext_resource type="AudioStream" uid="uid://tp2oow5u2xjs" path="res://sfx/get_small.wav" id="7_yh87f"]
+[ext_resource type="Texture2D" uid="uid://co8pk6ta1uimq" path="res://goblin/A.png" id="8_f71bv"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_d6bal"]
 size = Vector2(4, 7)
+
+[sub_resource type="Curve" id="Curve_6t46e"]
+_data = [Vector2(0, 0.231579), 0.0, 0.0, 0, 0, Vector2(1, 0.715789), 0.0, 0.0, 0, 0]
+point_count = 2
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_pf5l0"]
 shader = ExtResource("2_8cho7")
@@ -290,12 +295,20 @@ size = Vector2(6, 4)
 [node name="Goblin" type="CharacterBody2D"]
 collision_layer = 2
 script = ExtResource("1_jriel")
-punch_stun_duration = 1.0
-jump_strength = 100
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, -3.5)
 shape = SubResource("RectangleShape2D_d6bal")
+
+[node name="ScreamParticles" type="CPUParticles2D" parent="."]
+texture_filter = 1
+position = Vector2(0, -4)
+emitting = false
+amount = 6
+lifetime = 0.5
+texture = ExtResource("8_f71bv")
+gravity = Vector2(0, 0)
+scale_amount_curve = SubResource("Curve_6t46e")
 
 [node name="Sprite" type="AnimatedSprite2D" parent="."]
 texture_filter = 1
@@ -327,6 +340,9 @@ collision_mask = 2
 [node name="CollisionShape2D" type="CollisionShape2D" parent="HitArea"]
 position = Vector2(3, 0)
 shape = SubResource("RectangleShape2D_yk8in")
+
+[node name="RayCast2D" type="RayCast2D" parent="."]
+target_position = Vector2(0, 200)
 
 [connection signal="animation_finished" from="Sprite" to="." method="_on_sprite_animation_finished"]
 [connection signal="timeout" from="GrowthTimer" to="." method="_on_growth_timer_timeout"]

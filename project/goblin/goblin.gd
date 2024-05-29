@@ -25,6 +25,7 @@ const GRAVITY := 8.0
 @export var index := 0
 @export var attack_range := 8.0
 @export var disabled := false
+@export var scream_delay_time := 0.1
 
 var _stun_time := 0.0
 var small := true
@@ -38,11 +39,18 @@ var _special_animation_playing := false
 @onready var _grow_sound : AudioStreamPlayer2D = $GrowSound
 @onready var _shrink_sound : AudioStreamPlayer2D = $ShrinkSound
 @onready var _hit_area : Area2D = $HitArea
+@onready var _scream_particles : CPUParticles2D = $ScreamParticles
+@onready var _ground_detector : RayCast2D = $RayCast2D
 
 
 func _physics_process(delta:float)->void:
 	if not is_on_floor() or velocity.y > 0.0:
 		velocity.y += GRAVITY
+		
+	if _ground_detector.is_colliding():
+		_set_scream(false)
+	elif velocity.y > 5.0 and global_position.y > 60:
+		_set_scream(true)
 	
 	if _stun_time <= 0.0 and not disabled:
 		_process_actions()
@@ -53,6 +61,11 @@ func _physics_process(delta:float)->void:
 	_process_animation()
 	
 	move_and_slide()
+	
+	if velocity.y > 5.0:
+		_ground_detector.rotation = -min(atan(velocity.x / velocity.y), PI/2)
+	else:
+		_ground_detector.rotation = 0
 	
 	position.x = fposmod(position.x, 160)
 	
@@ -223,9 +236,24 @@ func _reload_shader()->void:
 	new_material.shader = load("res://goblin/goblin.gdshader")
 	new_material.set_shader_parameter("color1", color1)
 	new_material.set_shader_parameter("color2", color2)
+	_scream_particles.modulate = color1
 	_sprite.material = new_material
 
 
 func _play_attack_sound()->void:
 	_attack_sound.pitch_scale = randf() + (2 if small else 0)
 	_attack_sound.play()
+
+
+func _set_scream(value:bool)->void:
+	_scream_particles.emitting = value
+#	if value:
+#		if _scream_delay_timer.is_stopped() and not _scream_particles.emitting:
+#			_scream_delay_timer.start(scream_delay_time)
+#	else:
+#		_scream_delay_timer.stop()
+#		_scream_particles.emitting = false
+
+
+func _on_scream_delay_timer_timeout()->void:
+	_scream_particles.emitting = true

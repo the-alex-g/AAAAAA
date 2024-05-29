@@ -60,3 +60,15 @@ func _create_win_gem_with_material(gem_material:ShaderMaterial)->void:
 func clear_win_gems()->void:
 	for win_gem in _win_gem_container.get_children():
 		win_gem.queue_free()
+
+
+func update_gem_colors(from:Color, to:Color)->void:
+	if from == Color(0.0, 0.0, 0.0, 0.0):
+		return
+	
+	for child in _win_gem_container.get_children():
+		for i in 4:
+			if child.material.get_shader_parameter("color" + str(i + 1)) != null:
+				var color:Color = child.material.get_shader_parameter("color" + str(i + 1))
+				if color == from:
+					child.material.set_shader_parameter("color" + str(i + 1), to)
