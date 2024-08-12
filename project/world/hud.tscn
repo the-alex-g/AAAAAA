@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://cmiybl3yy4eh0"]
+[gd_scene load_steps=10 format=3 uid="uid://cmiybl3yy4eh0"]
 
 [ext_resource type="Script" path="res://world/hud.gd" id="1_qpx2s"]
 [ext_resource type="Theme" uid="uid://b6d3ukelyderc" path="res://world/theme.tres" id="2_dkdf0"]
@@ -18,22 +18,6 @@ region = Rect2(16, 8, 8, 8)
 [sub_resource type="AtlasTexture" id="AtlasTexture_iw713"]
 atlas = ExtResource("5_da07e")
 region = Rect2(16, 0, 8, 8)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_jko3u"]
-atlas = ExtResource("5_da07e")
-region = Rect2(16, 16, 8, 8)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_0ssq2"]
-atlas = ExtResource("5_da07e")
-region = Rect2(8, 8, 8, 8)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_c4i5k"]
-atlas = ExtResource("5_da07e")
-region = Rect2(16, 8, 8, 8)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_rkxy7"]
-atlas = ExtResource("5_da07e")
-region = Rect2(0, 8, 8, 8)
 
 [node name="HUD" type="CanvasLayer"]
 process_mode = 3
@@ -119,6 +103,7 @@ columns = 2
 [node name="BRect" type="TextureRect" parent="Control/PauseMenu/PanelContainer/GridContainer"]
 layout_mode = 2
 texture = SubResource("AtlasTexture_3m6h1")
+expand_mode = 3
 
 [node name="Label" type="Label" parent="Control/PauseMenu/PanelContainer/GridContainer"]
 layout_mode = 2
@@ -128,6 +113,7 @@ horizontal_alignment = 1
 [node name="BackRect" type="TextureRect" parent="Control/PauseMenu/PanelContainer/GridContainer"]
 layout_mode = 2
 texture = SubResource("AtlasTexture_n5e46")
+expand_mode = 3
 
 [node name="Label2" type="Label" parent="Control/PauseMenu/PanelContainer/GridContainer"]
 layout_mode = 2
@@ -137,108 +123,13 @@ horizontal_alignment = 1
 [node name="ControlRect" type="TextureRect" parent="Control/PauseMenu/PanelContainer/GridContainer"]
 layout_mode = 2
 texture = SubResource("AtlasTexture_iw713")
+expand_mode = 3
 
 [node name="ControlLabel" type="Label" parent="Control/PauseMenu/PanelContainer/GridContainer"]
 layout_mode = 2
 text = "toggle controls"
 horizontal_alignment = 1
 vertical_alignment = 1
-
-[node name="MainMenu" type="ColorRect" parent="Control"]
-visible = false
-texture_filter = 1
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0, 0, 0, 1)
-
-[node name="Title" type="Label" parent="Control/MainMenu"]
-layout_mode = 1
-anchors_preset = 10
-anchor_right = 1.0
-offset_top = 8.0
-offset_bottom = 41.0
-grow_horizontal = 2
-theme_override_font_sizes/font_size = 32
-text = "AAAAAA!"
-horizontal_alignment = 1
-
-[node name="Title2" type="Label" parent="Control/MainMenu"]
-layout_mode = 1
-anchors_preset = 10
-anchor_right = 1.0
-offset_top = 36.0
-offset_bottom = 45.0
-grow_horizontal = 2
-text = "a goblin saga"
-horizontal_alignment = 1
-
-[node name="GridContainer" type="GridContainer" parent="Control/MainMenu"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -34.5
-offset_top = -16.0
-offset_right = 34.5
-offset_bottom = 32.0
-grow_horizontal = 2
-grow_vertical = 2
-columns = 2
-
-[node name="DPadRect" type="TextureRect" parent="Control/MainMenu/GridContainer"]
-layout_mode = 2
-texture = SubResource("AtlasTexture_jko3u")
-
-[node name="GameLengthLabel" type="Label" parent="Control/MainMenu/GridContainer"]
-layout_mode = 2
-text = "indefinite"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="StartRect" type="TextureRect" parent="Control/MainMenu/GridContainer"]
-layout_mode = 2
-texture = SubResource("AtlasTexture_0ssq2")
-
-[node name="StartGameLabel" type="Label" parent="Control/MainMenu/GridContainer"]
-layout_mode = 2
-text = "play!"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="BackRect" type="TextureRect" parent="Control/MainMenu/GridContainer"]
-layout_mode = 2
-texture = SubResource("AtlasTexture_c4i5k")
-
-[node name="QuitLabel" type="Label" parent="Control/MainMenu/GridContainer"]
-layout_mode = 2
-text = "quit"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="ControlRect" type="TextureRect" parent="Control/MainMenu/GridContainer"]
-layout_mode = 2
-texture = SubResource("AtlasTexture_iw713")
-
-[node name="ControlLabel" type="Label" parent="Control/MainMenu/GridContainer"]
-layout_mode = 2
-text = "toggle controls"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="FullscreenRect" type="TextureRect" parent="Control/MainMenu/GridContainer"]
-layout_mode = 2
-texture = SubResource("AtlasTexture_rkxy7")
-
-[node name="FullscreenLabel" type="Label" parent="Control/MainMenu/GridContainer"]
-layout_mode = 2
-text = "fullscreen"
-horizontal_alignment = 1
 
 [node name="ControlInfo" parent="Control" instance=ExtResource("6_v4l26")]
 visible = false
