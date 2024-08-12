@@ -1,23 +1,10 @@
-[gd_scene load_steps=10 format=3 uid="uid://cmiybl3yy4eh0"]
+[gd_scene load_steps=6 format=3 uid="uid://cmiybl3yy4eh0"]
 
 [ext_resource type="Script" path="res://world/hud.gd" id="1_qpx2s"]
 [ext_resource type="Theme" uid="uid://b6d3ukelyderc" path="res://world/theme.tres" id="2_dkdf0"]
 [ext_resource type="PackedScene" uid="uid://d17boi01qtpj2" path="res://menu/round_over.tscn" id="3_mas8i"]
-[ext_resource type="StyleBox" uid="uid://c85qc3gb57jdf" path="res://world/info_background_stylebox.tres" id="5_4ux3p"]
-[ext_resource type="Texture2D" uid="uid://47rfdws3a60" path="res://world/button_images.png" id="5_da07e"]
-[ext_resource type="PackedScene" uid="uid://doshxelwyf2lk" path="res://world/control_info.tscn" id="6_v4l26"]
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_3m6h1"]
-atlas = ExtResource("5_da07e")
-region = Rect2(8, 0, 8, 8)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_n5e46"]
-atlas = ExtResource("5_da07e")
-region = Rect2(16, 8, 8, 8)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_iw713"]
-atlas = ExtResource("5_da07e")
-region = Rect2(16, 0, 8, 8)
+[ext_resource type="PackedScene" uid="uid://4063txajmwkw" path="res://menu/pause_menu.tscn" id="4_l02vy"]
+[ext_resource type="PackedScene" uid="uid://d0bstd4h3spyx" path="res://menu/main_menu.tscn" id="6_aaehq"]
 
 [node name="HUD" type="CanvasLayer"]
 process_mode = 3
@@ -39,6 +26,7 @@ anchor_bottom = 1.0
 grow_vertical = 2
 
 [node name="GameTimer" type="Timer" parent="Control"]
+process_mode = 1
 one_shot = true
 
 [node name="GameTimeLabel" type="Label" parent="Control"]
@@ -57,92 +45,18 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="RoundOver" parent="Control" instance=ExtResource("3_mas8i")]
-layout_mode = 1
-
-[node name="PauseMenu" type="Control" parent="Control"]
 visible = false
-texture_filter = 1
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
 
-[node name="Label" type="Label" parent="Control/PauseMenu"]
-texture_filter = 1
-layout_mode = 1
-anchors_preset = 10
-anchor_right = 1.0
-offset_top = 8.0
-offset_bottom = 25.0
-grow_horizontal = 2
-theme_override_font_sizes/font_size = 16
-text = "Paused"
-horizontal_alignment = 1
-
-[node name="PanelContainer" type="PanelContainer" parent="Control/PauseMenu"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -36.5
-offset_top = -20.0
-offset_right = 36.5
-offset_bottom = 20.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_styles/panel = ExtResource("5_4ux3p")
-
-[node name="GridContainer" type="GridContainer" parent="Control/PauseMenu/PanelContainer"]
-layout_mode = 2
-columns = 2
-
-[node name="BRect" type="TextureRect" parent="Control/PauseMenu/PanelContainer/GridContainer"]
-layout_mode = 2
-texture = SubResource("AtlasTexture_3m6h1")
-expand_mode = 3
-
-[node name="Label" type="Label" parent="Control/PauseMenu/PanelContainer/GridContainer"]
-layout_mode = 2
-text = "back"
-horizontal_alignment = 1
-
-[node name="BackRect" type="TextureRect" parent="Control/PauseMenu/PanelContainer/GridContainer"]
-layout_mode = 2
-texture = SubResource("AtlasTexture_n5e46")
-expand_mode = 3
-
-[node name="Label2" type="Label" parent="Control/PauseMenu/PanelContainer/GridContainer"]
-layout_mode = 2
-text = "main menu"
-horizontal_alignment = 1
-
-[node name="ControlRect" type="TextureRect" parent="Control/PauseMenu/PanelContainer/GridContainer"]
-layout_mode = 2
-texture = SubResource("AtlasTexture_iw713")
-expand_mode = 3
-
-[node name="ControlLabel" type="Label" parent="Control/PauseMenu/PanelContainer/GridContainer"]
-layout_mode = 2
-text = "toggle controls"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="ControlInfo" parent="Control" instance=ExtResource("6_v4l26")]
+[node name="PauseMenu" parent="Control" instance=ExtResource("4_l02vy")]
 visible = false
-layout_mode = 2
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -37.5
-offset_top = -31.5
-offset_right = 37.5
-offset_bottom = 55.5
-grow_horizontal = 2
-grow_vertical = 2
+layout_mode = 1
+
+[node name="MainMenu" parent="Control" instance=ExtResource("6_aaehq")]
+visible = false
+layout_mode = 1
 
 [connection signal="timeout" from="Control/GameTimer" to="." method="_on_game_timer_timeout"]
+[connection signal="return_to_game" from="Control/PauseMenu" to="." method="_on_pause_menu_return_to_game"]
+[connection signal="return_to_menu" from="Control/PauseMenu" to="." method="_on_pause_menu_return_to_menu"]
+[connection signal="game_started" from="Control/MainMenu" to="." method="_on_main_menu_game_started"]

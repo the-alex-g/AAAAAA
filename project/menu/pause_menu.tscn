@@ -1,8 +1,10 @@
-[gd_scene load_steps=7 format=3 uid="uid://4063txajmwkw"]
+[gd_scene load_steps=9 format=3 uid="uid://4063txajmwkw"]
 
 [ext_resource type="StyleBox" uid="uid://c85qc3gb57jdf" path="res://world/info_background_stylebox.tres" id="1_3oxk8"]
 [ext_resource type="Theme" uid="uid://b6d3ukelyderc" path="res://world/theme.tres" id="1_cuopp"]
 [ext_resource type="Texture2D" uid="uid://47rfdws3a60" path="res://world/button_images.png" id="2_0f2he"]
+[ext_resource type="Script" path="res://menu/pause_menu.gd" id="2_t5io3"]
+[ext_resource type="PackedScene" uid="uid://doshxelwyf2lk" path="res://world/control_info.tscn" id="5_fiko6"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_3m6h1"]
 atlas = ExtResource("2_0f2he")
@@ -17,6 +19,7 @@ atlas = ExtResource("2_0f2he")
 region = Rect2(16, 0, 8, 8)
 
 [node name="PauseMenu" type="Control"]
+process_mode = 3
 texture_filter = 1
 layout_mode = 3
 anchors_preset = 15
@@ -25,6 +28,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_cuopp")
+script = ExtResource("2_t5io3")
 
 [node name="Label" type="Label" parent="."]
 texture_filter = 1
@@ -34,7 +38,8 @@ anchor_right = 1.0
 offset_top = 8.0
 offset_bottom = 25.0
 grow_horizontal = 2
-theme_override_font_sizes/font_size = 16
+theme_override_constants/outline_size = 16
+theme_override_font_sizes/font_size = 32
 text = "Paused"
 horizontal_alignment = 1
 
@@ -60,6 +65,7 @@ columns = 2
 [node name="BRect" type="TextureRect" parent="PanelContainer/GridContainer"]
 layout_mode = 2
 texture = SubResource("AtlasTexture_3m6h1")
+expand_mode = 2
 
 [node name="Label" type="Label" parent="PanelContainer/GridContainer"]
 layout_mode = 2
@@ -69,6 +75,7 @@ horizontal_alignment = 1
 [node name="BackRect" type="TextureRect" parent="PanelContainer/GridContainer"]
 layout_mode = 2
 texture = SubResource("AtlasTexture_n5e46")
+expand_mode = 2
 
 [node name="Label2" type="Label" parent="PanelContainer/GridContainer"]
 layout_mode = 2
@@ -78,9 +85,25 @@ horizontal_alignment = 1
 [node name="ControlRect" type="TextureRect" parent="PanelContainer/GridContainer"]
 layout_mode = 2
 texture = SubResource("AtlasTexture_iw713")
+expand_mode = 2
 
 [node name="ControlLabel" type="Label" parent="PanelContainer/GridContainer"]
 layout_mode = 2
 text = "toggle controls"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="ControlInfo" parent="." instance=ExtResource("5_fiko6")]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -73.5
+offset_top = -50.5
+offset_right = 73.5
+offset_bottom = 96.5
+grow_horizontal = 2
+grow_vertical = 2

@@ -1,6 +1,8 @@
 class_name MainMenu
 extends ColorRect
 
+signal game_started(round_count)
+
 var _control_menu_open := false
 var _total_rounds := -1
 
@@ -11,12 +13,14 @@ var _total_rounds := -1
 
 func _input(event:InputEvent)->void:
 	if event is InputEventJoypadButton:
-		if event.pressed:
+		if event.pressed and visible:
 			_resolve_main_menu_event(event)
 
 
 func _resolve_main_menu_event(event:InputEventJoypadButton)->void:
-	if not _control_menu_open:
+	if _control_menu_open:
+		_toggle_controls()
+	else:
 		match event.button_index:
 			JOY_BUTTON_DPAD_UP:
 				_increase_game_length()
@@ -31,8 +35,8 @@ func _resolve_main_menu_event(event:InputEventJoypadButton)->void:
 					DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
 				else:
 					DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
-	if event.button_index == JOY_BUTTON_Y:
-		_toggle_controls()
+			JOY_BUTTON_Y:
+				_toggle_controls()
 
 
 func _increase_game_length()->void:
@@ -56,10 +60,7 @@ func _update_game_length_label()->void:
 
 
 func _start_game()->void:
-	var new_game := preload("res://world/world.tscn").instantiate()
-	new_game.rounds = _total_rounds
-	get_parent().add_child(new_game)
-	queue_free()
+	game_started.emit(_total_rounds)
 
 
 func _toggle_controls()->void:

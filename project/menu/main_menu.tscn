@@ -26,6 +26,7 @@ atlas = ExtResource("1_1tl0d")
 region = Rect2(0, 8, 8, 8)
 
 [node name="MainMenu" type="ColorRect"]
+process_mode = 3
 texture_filter = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -46,11 +47,11 @@ alignment = 1
 
 [node name="Title" type="Label" parent="TitleContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 32
+theme_override_font_sizes/font_size = 64
 text = "AAAAAA!"
 horizontal_alignment = 1
 
-[node name="Title2" type="Label" parent="TitleContainer"]
+[node name="Subtitle" type="Label" parent="TitleContainer"]
 layout_mode = 2
 text = "a goblin saga"
 horizontal_alignment = 1
@@ -73,7 +74,7 @@ columns = 2
 [node name="DPadRect" type="TextureRect" parent="MainMenuOptions"]
 layout_mode = 2
 texture = SubResource("AtlasTexture_jko3u")
-expand_mode = 2
+expand_mode = 3
 
 [node name="GameLengthLabel" type="Label" parent="MainMenuOptions"]
 layout_mode = 2
@@ -84,7 +85,7 @@ vertical_alignment = 1
 [node name="StartRect" type="TextureRect" parent="MainMenuOptions"]
 layout_mode = 2
 texture = SubResource("AtlasTexture_0ssq2")
-expand_mode = 2
+expand_mode = 3
 
 [node name="StartGameLabel" type="Label" parent="MainMenuOptions"]
 layout_mode = 2
@@ -95,7 +96,7 @@ vertical_alignment = 1
 [node name="BackRect" type="TextureRect" parent="MainMenuOptions"]
 layout_mode = 2
 texture = SubResource("AtlasTexture_c4i5k")
-expand_mode = 2
+expand_mode = 3
 
 [node name="QuitLabel" type="Label" parent="MainMenuOptions"]
 layout_mode = 2
@@ -106,7 +107,7 @@ vertical_alignment = 1
 [node name="ControlRect" type="TextureRect" parent="MainMenuOptions"]
 layout_mode = 2
 texture = SubResource("AtlasTexture_iw713")
-expand_mode = 2
+expand_mode = 3
 
 [node name="ControlLabel" type="Label" parent="MainMenuOptions"]
 layout_mode = 2
@@ -117,7 +118,7 @@ vertical_alignment = 1
 [node name="FullscreenRect" type="TextureRect" parent="MainMenuOptions"]
 layout_mode = 2
 texture = SubResource("AtlasTexture_rkxy7")
-expand_mode = 2
+expand_mode = 3
 
 [node name="FullscreenLabel" type="Label" parent="MainMenuOptions"]
 layout_mode = 2

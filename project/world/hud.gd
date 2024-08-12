@@ -14,18 +14,13 @@ var _pause_menu_open := false
 var _total_rounds := -1
 var _rounds_elapsed := 0
 var _main_menu_open := false
-var _control_menu_open := false
 
 @onready var _label_container : VBoxContainer = $Control/ScoreContainer
 @onready var _game_timer : Timer = $Control/GameTimer
 @onready var _game_time_label : Label = $Control/GameTimeLabel
 @onready var _round_over_overlay : RoundOverMenu = $Control/RoundOver
 @onready var _pause_menu : Control = $Control/PauseMenu
-@onready var _game_length_label : Label = $Control/MainMenu/GridContainer/GameLengthLabel
 @onready var _main_menu : ColorRect = $Control/MainMenu
-@onready var _main_menu_options : GridContainer = $Control/MainMenu/GridContainer
-@onready var _pause_menu_options : PanelContainer = $Control/PauseMenu/PanelContainer
-@onready var _controls : PanelContainer = $Control/ControlInfo
 
 
 func _ready()->void:
@@ -33,76 +28,20 @@ func _ready()->void:
 
 
 func _input(event:InputEvent)->void:
-	if event is InputEventJoypadButton:
-		if _main_menu_open:
-			_resolve_main_menu_event(event)
-		
-		elif _pending_new_game:
-			if event.pressed:
-				_open_main_menu()
+	if event is InputEventJoypadButton and event.pressed:
+		if _pending_new_game:
+			_open_main_menu()
 		
 		elif _pending_new_round:
-			if event.pressed:
-				round_over.emit()
-				_reset_round()
+			round_over.emit()
+			_reset_round()
 		
-		elif _pause_menu_open and event.pressed:
-			match event.button_index:
-				JOY_BUTTON_B:
-					if not _control_menu_open:
-						_close_pause_menu()
-					
-				JOY_BUTTON_BACK:
-					if not _control_menu_open:
-						_close_pause_menu()
-						_open_main_menu()
-				JOY_BUTTON_Y:
-					_toggle_controls()
-		
-		elif event.button_index == JOY_BUTTON_BACK and event.pressed:
+		elif event.button_index == JOY_BUTTON_BACK and not _pause_menu_open and not _main_menu_open:
 			_show_pause_menu()
-		
-		if _control_menu_open and event.pressed and event.button_index != JOY_BUTTON_Y:
-			_toggle_controls()
-
-
-func _toggle_controls()->void:
-	_control_menu_open = not _control_menu_open
-	if _control_menu_open:
-		_controls.show()
-		if _main_menu_open:
-			_main_menu_options.hide()
-		elif _pause_menu_open:
-			_pause_menu_options.hide()
-	else:
-		_controls.hide()
-		_main_menu_options.show()
-		_pause_menu_options.show()
 
 
 func _process(_delta:float)->void:
 	_game_time_label.text = str(round(_game_timer.time_left))
-
-
-func _resolve_main_menu_event(event:InputEventJoypadButton)->void:
-	if event.pressed:
-		if not _control_menu_open:
-			match event.button_index:
-				JOY_BUTTON_DPAD_UP:
-					_increase_game_length()
-				JOY_BUTTON_DPAD_DOWN:
-					_decrease_game_length()
-				JOY_BUTTON_START:
-					_start_game()
-				JOY_BUTTON_BACK:
-					get_tree().quit()
-				JOY_BUTTON_X:
-					if DisplayServer.window_get_mode() == DisplayServer.WINDOW_MODE_WINDOWED:
-						DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
-					else:
-						DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
-		if event.button_index == JOY_BUTTON_Y:
-			_toggle_controls()
 
 
 func _open_main_menu()->void:
@@ -111,13 +50,9 @@ func _open_main_menu()->void:
 	_scores.clear()
 	
 	_round_over_overlay.hide()
-	_pause_menu.hide()
 	
 	_main_menu_open = true
 	_main_menu.show()
-	
-	_update_game_length_label()
-
 
 
 func _clear_score_labels()->void:
@@ -126,45 +61,13 @@ func _clear_score_labels()->void:
 		label.queue_free()
 
 
-func _increase_game_length()->void:
-	_total_rounds += 2
-	_update_game_length_label()
-
-
-func _decrease_game_length()->void:
-	if _total_rounds != -1:
-		_total_rounds -= 2
-		_update_game_length_label()
-
-
-func _update_game_length_label()->void:
-	if _total_rounds == -1:
-		_game_length_label.text = "indefinite"
-	elif _total_rounds == 1:
-		_game_length_label.text = "1 round"
-	else:
-		_game_length_label.text = str(_total_rounds) + " rounds"
-
-
-func _start_game()->void:
-	_main_menu_open = false
-	_main_menu.hide()
-	_rounds_elapsed = 0
-	reset_board.emit()
-	_round_over_overlay.clear_win_gems()
-	_reset_wins()
-	_reset_round()
-
-
 func _show_pause_menu()->void:
-	_game_timer.paused = true
 	_pause_menu.show()
 	get_tree().paused = true
 	_pause_menu_open = true
 
 
 func _close_pause_menu()->void:
-	_game_timer.paused = false
 	_pause_menu.hide()
 	get_tree().paused = false
 	_pause_menu_open = false
@@ -283,3 +186,23 @@ func _reset_round()->void:
 		_scores[i] = 0
 		_update_score(i)
 	_game_timer.start(round_length)
+
+
+func _on_main_menu_game_started(round_count:int)->void:
+	_main_menu_open = false
+	_main_menu.hide()
+	_rounds_elapsed = 0
+	reset_board.emit()
+	_round_over_overlay.clear_win_gems()
+	_reset_wins()
+	_reset_round()
+	_total_rounds = round_count
+
+
+func _on_pause_menu_return_to_game()->void:
+	_close_pause_menu()
+
+
+func _on_pause_menu_return_to_menu()->void:
+	_close_pause_menu()
+	_open_main_menu()
