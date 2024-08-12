@@ -47,7 +47,7 @@ alignment = 1
 
 [node name="Title" type="Label" parent="TitleContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 64
+theme_override_font_sizes/font_size = 32
 text = "AAAAAA!"
 horizontal_alignment = 1
 

@@ -5,7 +5,6 @@
 [ext_resource type="PackedScene" uid="uid://cmiybl3yy4eh0" path="res://world/hud.tscn" id="3_5j0m0"]
 
 [node name="World" type="Node2D"]
-scale = Vector2(2, 2)
 script = ExtResource("1_2vkgl")
 
 [node name="ColorRect" type="ColorRect" parent="."]
