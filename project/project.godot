@@ -25,3 +25,7 @@ window/stretch/mode="canvas_items"
 
 2d_physics/layer_1="Terrain"
 2d_physics/layer_2="Goblin"
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"

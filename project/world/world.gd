@@ -18,7 +18,7 @@ const COLORS := {
 	Color.GREEN:Color.AQUAMARINE,
 	Color.MAGENTA:Color.MEDIUM_ORCHID,
 }
-const CONFIG_PATH := "res://config.cfg"
+const MAP_FILE_PATH := "res://maps.cfg"
 
 @export_enum("load", "save", "run", "load_specific") var map_status := "load"
 @export var map_to_load := -1
@@ -181,7 +181,7 @@ func _spawn_totem()->void:
 
 func _save_map()->void:
 	var file := ConfigFile.new()
-	file.load(CONFIG_PATH)
+	file.load(MAP_FILE_PATH)
 	
 	var map_index := 0
 	var map := _tile_map.get_used_cells(0)
@@ -192,7 +192,7 @@ func _save_map()->void:
 
 	file.set_value("maps", str(map_index), map)
 	
-	file.save(CONFIG_PATH)
+	file.save(MAP_FILE_PATH)
 	
 	print("map saved")
 
@@ -201,7 +201,7 @@ func _load_map()->void:
 	_tile_map.clear()
 	
 	var file := ConfigFile.new()
-	file.load(CONFIG_PATH)
+	file.load(MAP_FILE_PATH)
 	
 	var map : Array[Vector2i] = []
 	
