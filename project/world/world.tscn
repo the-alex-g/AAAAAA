@@ -16,6 +16,7 @@ color = Color(0, 0, 0, 1)
 texture_filter = 1
 tile_set = ExtResource("2_ujo6d")
 format = 2
+layer_0/tile_data = PackedInt32Array(917504, 327680, 1, 917505, 327680, 1, 917506, 327680, 1, 917507, 327680, 1, 917508, 327680, 1, 917509, 196608, 1, 917519, 65536, 1, 917520, 327680, 1, 917521, 327680, 1, 917522, 327680, 1, 917523, 327680, 1, 917524, 196608, 1, 983039, 65536, 1, 720899, 65536, 1, 720900, 327680, 1, 720911, 65536, 1, 720912, 327680, 1, 720913, 196608, 1, 589836, 327680, 1, 589837, 196608, 1, 589835, 65536, 1, 720901, 196608, 1, 524294, 65536, 1, 524295, 327680, 1, 524296, 196608, 1, 327691, 65536, 1, 327692, 196608, 1, 458767, 65536, 1, 458768, 196608, 1, 327685, 196608, 1, 327684, 327680, 1, 327683, 327680, 1, 327682, 65536, 1)
 
 [node name="Players" type="Node2D" parent="."]
 
@@ -27,5 +28,5 @@ one_shot = true
 [connection signal="player_color_changed" from="." to="HUD" method="_on_world_player_color_changed"]
 [connection signal="player_died" from="." to="HUD" method="_on_world_player_died"]
 [connection signal="player_joined" from="." to="HUD" method="_on_world_player_joined"]
-[connection signal="reset_board" from="HUD" to="." method="_on_hud_reset_board"]
-[connection signal="round_over" from="HUD" to="." method="_on_hud_round_over"]
+[connection signal="new_game_started" from="HUD" to="." method="_on_hud_new_game_started"]
+[connection signal="new_round_started" from="HUD" to="." method="_on_hud_new_round_started"]

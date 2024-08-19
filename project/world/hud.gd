@@ -1,15 +1,20 @@
 extends CanvasLayer
 
-signal round_over
-signal reset_board
+signal new_round_started
+signal new_game_started
 
 @export var round_length := 30
 
 var _scores := {}
 var _score_labels := {}
 var _wins := {}
+var _player_count := 0
 var _pending_new_round := false
 var _pending_new_game := false
+var _in_spawn_round := false :
+	set(value):
+		_in_spawn_round = value
+		_spawn_round_label.visible = _in_spawn_round
 var _pause_menu_open := false
 var _total_rounds := -1
 var _rounds_elapsed := 0
@@ -21,6 +26,7 @@ var _main_menu_open := false
 @onready var _round_over_overlay : RoundOverMenu = $Control/RoundOver
 @onready var _pause_menu : Control = $Control/PauseMenu
 @onready var _main_menu : ColorRect = $Control/MainMenu
+@onready var _spawn_round_label : Label = $Control/SpawnRoundLabel
 
 
 func _ready()->void:
@@ -33,11 +39,14 @@ func _input(event:InputEvent)->void:
 			_open_main_menu()
 		
 		elif _pending_new_round:
-			round_over.emit()
 			_reset_round()
 		
 		elif event.button_index == JOY_BUTTON_BACK and not _pause_menu_open and not _main_menu_open:
 			_show_pause_menu()
+		
+		elif _in_spawn_round and _player_count > 1:
+			if event.button_index == JOY_BUTTON_START:
+				_reset_round()
 
 
 func _process(_delta:float)->void:
@@ -53,6 +62,8 @@ func _open_main_menu()->void:
 	
 	_main_menu_open = true
 	_main_menu.show()
+	
+	_spawn_round_label.hide()
 
 
 func _clear_score_labels()->void:
@@ -65,12 +76,18 @@ func _show_pause_menu()->void:
 	_pause_menu.show()
 	get_tree().paused = true
 	_pause_menu_open = true
+	
+	if _in_spawn_round:
+		_spawn_round_label.hide()
 
 
 func _close_pause_menu()->void:
 	_pause_menu.hide()
 	get_tree().paused = false
 	_pause_menu_open = false
+	
+	if _in_spawn_round:
+		_spawn_round_label.show()
 
 
 func _on_world_player_color_changed(index:int, color:Color, former_color:Color)->void:
@@ -86,6 +103,7 @@ func _on_world_player_died(index:int)->void:
 func _on_world_player_joined(index:int, color:Color)->void:
 	_scores[index] = 0
 	_wins[index] = 0
+	_player_count += 1
 	_add_score_label(index, color)
 
 
@@ -170,14 +188,15 @@ func _get_winner_colors()->Array[Color]:
 
 
 func _get_winning_score()->int:
-	var winning_score := 100000 # if you die that many times, you'ma got probbles.
+	var winning_score := INF
 	for player in _scores.keys():
 		if _scores[player] < winning_score:
 			winning_score = _scores[player]
+	@warning_ignore("narrowing_conversion")
 	return winning_score
 
 
-func _reset_round()->void:
+func _reset_round(spawn_round := false)->void:
 	get_tree().paused = false
 	_pending_new_round = false
 	_pending_new_game = false
@@ -185,17 +204,22 @@ func _reset_round()->void:
 	for i in _scores.keys():
 		_scores[i] = 0
 		_update_score(i)
-	_game_timer.start(round_length)
+	_in_spawn_round = spawn_round
+	
+	if not spawn_round:
+		new_round_started.emit()
+		_game_timer.start(round_length)
 
 
 func _on_main_menu_game_started(round_count:int)->void:
 	_main_menu_open = false
 	_main_menu.hide()
 	_rounds_elapsed = 0
-	reset_board.emit()
+	_player_count = 0
+	new_game_started.emit()
 	_round_over_overlay.clear_win_gems()
 	_reset_wins()
-	_reset_round()
+	_reset_round(true)
 	_total_rounds = round_count
 
 

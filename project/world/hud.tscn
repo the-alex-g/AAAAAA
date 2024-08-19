@@ -1,10 +1,27 @@
-[gd_scene load_steps=6 format=3 uid="uid://cmiybl3yy4eh0"]
+[gd_scene load_steps=11 format=3 uid="uid://cmiybl3yy4eh0"]
 
 [ext_resource type="Script" path="res://world/hud.gd" id="1_qpx2s"]
 [ext_resource type="Theme" uid="uid://b6d3ukelyderc" path="res://world/theme.tres" id="2_dkdf0"]
 [ext_resource type="PackedScene" uid="uid://d17boi01qtpj2" path="res://menu/round_over.tscn" id="3_mas8i"]
 [ext_resource type="PackedScene" uid="uid://4063txajmwkw" path="res://menu/pause_menu.tscn" id="4_l02vy"]
 [ext_resource type="PackedScene" uid="uid://d0bstd4h3spyx" path="res://menu/main_menu.tscn" id="6_aaehq"]
+[ext_resource type="Texture2D" uid="uid://47rfdws3a60" path="res://world/button_images.png" id="6_axcmq"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wqcxu"]
+atlas = ExtResource("6_axcmq")
+region = Rect2(0, 0, 8, 8)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_w7ivd"]
+atlas = ExtResource("6_axcmq")
+region = Rect2(8, 8, 8, 8)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jp4r2"]
+atlas = ExtResource("6_axcmq")
+region = Rect2(8, 16, 8, 8)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ntmqc"]
+atlas = ExtResource("6_axcmq")
+region = Rect2(0, 16, 8, 8)
 
 [node name="HUD" type="CanvasLayer"]
 process_mode = 3
@@ -55,6 +72,57 @@ layout_mode = 1
 [node name="MainMenu" parent="Control" instance=ExtResource("6_aaehq")]
 visible = false
 layout_mode = 1
+
+[node name="SpawnRoundLabel" type="Label" parent="Control"]
+visible = false
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -85.5
+offset_top = 10.0
+offset_right = 85.5
+offset_bottom = 18.0
+grow_horizontal = 2
+text = "Press     to join and      to start.
+Use           to change colors!"
+horizontal_alignment = 1
+
+[node name="TextureRect" type="TextureRect" parent="Control/SpawnRoundLabel"]
+layout_mode = 0
+offset_left = 48.5
+offset_top = -1.0
+offset_right = 56.5
+offset_bottom = 7.0
+texture = SubResource("AtlasTexture_wqcxu")
+stretch_mode = 3
+
+[node name="TextureRect2" type="TextureRect" parent="Control/SpawnRoundLabel"]
+layout_mode = 0
+offset_left = 104.5
+offset_top = -1.0
+offset_right = 112.5
+offset_bottom = 7.0
+texture = SubResource("AtlasTexture_w7ivd")
+stretch_mode = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Control/SpawnRoundLabel"]
+layout_mode = 0
+offset_left = 49.5
+offset_top = 8.0
+offset_right = 69.5
+offset_bottom = 16.0
+
+[node name="TextureRect2" type="TextureRect" parent="Control/SpawnRoundLabel/HBoxContainer"]
+layout_mode = 2
+texture = SubResource("AtlasTexture_jp4r2")
+stretch_mode = 3
+
+[node name="TextureRect3" type="TextureRect" parent="Control/SpawnRoundLabel/HBoxContainer"]
+layout_mode = 2
+texture = SubResource("AtlasTexture_ntmqc")
+stretch_mode = 3
 
 [connection signal="timeout" from="Control/GameTimer" to="." method="_on_game_timer_timeout"]
 [connection signal="return_to_game" from="Control/PauseMenu" to="." method="_on_pause_menu_return_to_game"]

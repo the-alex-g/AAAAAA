@@ -20,7 +20,7 @@ const COLORS := {
 }
 const MAP_FILE_PATH := "res://maps.cfg"
 
-@export_enum("load", "save", "run", "load_specific") var map_status := "load"
+@export_enum("load", "save", "run", "save as spawn") var map_status := "load"
 @export var map_to_load := -1
 
 var player_count := 0
@@ -29,6 +29,7 @@ var _used_colors := []
 var _spawn_points : Array[Vector2i] = []
 var _totem : Totem
 var _last_map_loaded := -1
+var _in_spawn_map := true
 
 @onready var _player_container : Node2D = $Players
 @onready var _tile_map : TileMap = $TileMap
@@ -38,14 +39,18 @@ var _last_map_loaded := -1
 func _ready()->void:
 	if map_status == "save":
 		_save_map()
-	elif map_status == "load" or map_status == "load_specific":
-		_load_map()
+	elif map_status == "save as spawn":
+		_save_map_as_spawn()
+	elif map_status == "run":
+		_save_map_as_current()
 	
-	_find_spawn_points()
-	_spawn_totem()
+	_load_map(true)
 
 
 func _input(event:InputEvent)->void:
+	if not _in_spawn_map:
+		return
+	
 	if event is InputEventJoypadButton:
 		if event.pressed:
 			if event.button_index == JOY_BUTTON_A and not _players_added.has(event.device):
@@ -171,12 +176,14 @@ func _on_totem_used()->void:
 
 func _spawn_totem()->void:
 	if is_instance_valid(_totem):
+		_totem.position = _get_spawn_point()
 		return
 	
+	_totem_spawn_timer.stop()
 	_totem = load("res://totem/totem.tscn").instantiate()
 	_totem.position = _get_spawn_point()
 	call_deferred("add_child", _totem)
-	_totem.used.connect(Callable(self, "_on_totem_used"))
+	_totem.used.connect(_on_totem_used)
 
 
 func _save_map()->void:
@@ -187,6 +194,7 @@ func _save_map()->void:
 	var map := _tile_map.get_used_cells(0)
 	while file.has_section_key("maps", str(map_index)):
 		if file.get_value("maps", str(map_index)) == map:
+			print("map already exists")
 			return
 		map_index += 1
 
@@ -197,53 +205,70 @@ func _save_map()->void:
 	print("map saved")
 
 
-func _load_map()->void:
+func _save_map_as_spawn()->void:
+	var file := ConfigFile.new()
+	file.load(MAP_FILE_PATH)
+	file.set_value("spawn map", "spawn map", _tile_map.get_used_cells(0))
+	file.save(MAP_FILE_PATH)
+	
+	print("map saved as spawn map")
+
+
+func _save_map_as_current()->void:
+	var file := ConfigFile.new()
+	file.load(MAP_FILE_PATH)
+	file.set_value("current map", "current map", _tile_map.get_used_cells(0))
+	file.save(MAP_FILE_PATH)
+
+
+func _load_map(spawn_map := false)->void:
 	_tile_map.clear()
+	_in_spawn_map = spawn_map
 	
 	var file := ConfigFile.new()
 	file.load(MAP_FILE_PATH)
 	
 	var map : Array[Vector2i] = []
 	
-	if map_status == "load":
+	if spawn_map:
+		map = file.get_value("spawn map", "spawn map")
+	elif map_status == "run":
+		map = file.get_value("current map", "current map")
+	elif map_to_load == -1:
 		var number_of_maps := 0
 		while file.has_section_key("maps", str(number_of_maps)):
 			number_of_maps += 1
 		
 		var map_index := randi() % number_of_maps
-		while _last_map_loaded == map_index:
+		while number_of_maps > 1 and _last_map_loaded == map_index:
 			map_index = randi() % number_of_maps
 		
 		map = file.get_value("maps", str(map_index))
 		_last_map_loaded = map_index
-	
-	elif map_status == "load_specific":
+	else:
 		map = file.get_value("maps", str(map_to_load))
 	
 	_tile_map.set_cells_terrain_connect(0, map, 0, 0)
-
-
-func _on_hud_round_over()->void:
-	if map_status == "load":
-		_load_map()
-		_find_spawn_points()
 	
-	for player in _player_container.get_children():
-		if player is Goblin: # there's a chance that bombs could be in there.
-			_respawn(player)
-		if player is Bomb:
-			player.queue_free()
+	_find_spawn_points()
+	_spawn_totem()
+
+
+func _on_hud_new_round_started()->void:
+	_load_map()
 	
-	if is_instance_valid(_totem):
-		_totem.position = _get_spawn_point()
-	else:
-		_totem_spawn_timer.stop()
-		_spawn_totem()
+	for object in _player_container.get_children():
+		if object is Goblin: # there's a chance that bombs could be in there.
+			_respawn(object)
+		if object is Bomb:
+			object.queue_free()
 
 
-func _on_hud_reset_board()->void:
+func _on_hud_new_game_started()->void:
 	_players_added.clear()
 	player_count = 0
 	_used_colors.clear()
 	for player in _player_container.get_children():
 		player.queue_free()
+	
+	_load_map(true)

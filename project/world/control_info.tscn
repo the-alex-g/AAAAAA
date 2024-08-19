@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://doshxelwyf2lk"]
+[gd_scene load_steps=10 format=3 uid="uid://doshxelwyf2lk"]
 
 [ext_resource type="StyleBox" uid="uid://c85qc3gb57jdf" path="res://world/info_background_stylebox.tres" id="1_fppgx"]
 [ext_resource type="Theme" uid="uid://b6d3ukelyderc" path="res://world/theme.tres" id="1_s65xg"]
@@ -28,21 +28,15 @@ region = Rect2(8, 24, 8, 8)
 atlas = ExtResource("2_w61qk")
 region = Rect2(0, 24, 8, 8)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_rk0ao"]
-atlas = ExtResource("2_w61qk")
-region = Rect2(8, 16, 8, 8)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_p7bpi"]
-atlas = ExtResource("2_w61qk")
-region = Rect2(0, 16, 8, 8)
-
 [node name="ControlInfo" type="PanelContainer"]
-offset_right = 75.0
-offset_bottom = 87.0
+offset_right = 64.0
+offset_bottom = 72.0
 theme_override_styles/panel = ExtResource("1_fppgx")
 
 [node name="GridContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
 
 [node name="SingleInput" type="GridContainer" parent="GridContainer"]
 texture_filter = 1
@@ -57,7 +51,7 @@ expand_mode = 3
 
 [node name="Label" type="Label" parent="GridContainer/SingleInput"]
 layout_mode = 2
-text = "jump / join"
+text = "jump"
 horizontal_alignment = 1
 
 [node name="TextureRect2" type="TextureRect" parent="GridContainer/SingleInput"]
@@ -120,19 +114,4 @@ expand_mode = 3
 [node name="Label3" type="Label" parent="GridContainer/DoubleInput"]
 layout_mode = 2
 text = "uppercut"
-horizontal_alignment = 1
-
-[node name="TextureRect6" type="TextureRect" parent="GridContainer/DoubleInput"]
-layout_mode = 2
-texture = SubResource("AtlasTexture_rk0ao")
-expand_mode = 3
-
-[node name="TextureRect7" type="TextureRect" parent="GridContainer/DoubleInput"]
-layout_mode = 2
-texture = SubResource("AtlasTexture_p7bpi")
-expand_mode = 3
-
-[node name="Label6" type="Label" parent="GridContainer/DoubleInput"]
-layout_mode = 2
-text = "change color"
 horizontal_alignment = 1
