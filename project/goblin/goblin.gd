@@ -28,7 +28,13 @@ const GRAVITY := 8.0
 @export var scream_delay_time := 0.1
 
 var _stun_time := 0.0
-var small := true
+var small := true :
+	set(value):
+		small = value
+		if small:
+			_hit_area.scale = Vector2.ONE
+		else:
+			_hit_area.scale = Vector2.ONE * 2
 var _can_attack := true
 var _special_animation_playing := false
 
@@ -83,15 +89,12 @@ func _process_actions()->void:
 		velocity.y -= jump_strength
 	
 	if Input.is_action_pressed("punch_" + str(index)) and _can_attack:
-		if Input.get_joy_axis(index, JOY_AXIS_LEFT_Y) < -0.3:
-			_uppercut()
-		else:
-			_punch()
+		_punch()
 	
-	elif Input.is_action_pressed("kick_" + str(index)) and _can_attack and small:
+	elif Input.is_action_pressed("kick_" + str(index)) and _can_attack:
 		_kick()
 	
-	elif Input.is_action_pressed("super_" + str(index)) and _can_attack and small:
+	elif Input.is_action_pressed("super_" + str(index)) and _can_attack:
 		_drop_bomb()
 
 
@@ -112,39 +115,48 @@ func _uppercut()->void:
 
 
 func _punch()->void:
-	var target := _get_target()
-	if target != null:
-		if small:
-			target.stun(punch_stun_duration)
-		else:
-			target.knockback(super_punch_knockback, -PI / 2 + PI / 3 * _sprite.scale.x)
-	
-	_sprite.play("punch_"  + ("s" if small else "l"))
-	_play_attack_sound()
-	
-	_attack_cooldown(punch_cooldown)
+	if Input.get_joy_axis(index, JOY_AXIS_LEFT_Y) < -0.3:
+		_uppercut()
+	else:
+		var target := _get_target()
+		if target != null:
+			if small:
+				target.stun(punch_stun_duration)
+			else:
+				target.knockback(super_punch_knockback, -PI / 2 + PI / 3 * _sprite.scale.x)
+		
+		_sprite.play("punch_"  + ("s" if small else "l"))
+		_play_attack_sound()
+		
+		_attack_cooldown(punch_cooldown)
 
 
 func _kick()->void:
-	var target := _get_target()
-	if target != null:
-		target.knockback(kick_knockback, get_angle_to(target.global_position))
-	
-	_sprite.play("kick_s")
-	_play_attack_sound()
-	
-	_attack_cooldown(kick_cooldown)
+	if not small:
+		_punch()
+	else:
+		var target := _get_target()
+		if target != null:
+			target.knockback(kick_knockback, get_angle_to(target.global_position))
+		
+		_sprite.play("kick_s")
+		_play_attack_sound()
+		
+		_attack_cooldown(kick_cooldown)
 
 
 func _drop_bomb()->void:
-	_sprite.play("super_s")
-	
-	var bomb : Bomb = preload("res://goblin/bomb/bomb.tscn").instantiate()
-	bomb.global_position = global_position + Vector2(4 * _sprite.scale.x, -1)
-	bomb.modulate = color1
-	get_parent().add_child(bomb)
-	
-	_attack_cooldown(super_cooldown)
+	if not small:
+		_punch()
+	else:
+		_sprite.play("super_s")
+		
+		var bomb : Bomb = preload("res://goblin/bomb/bomb.tscn").instantiate()
+		bomb.global_position = global_position + Vector2(4 * _sprite.scale.x, -1)
+		bomb.modulate = color1
+		get_parent().add_child(bomb)
+		
+		_attack_cooldown(super_cooldown)
 
 
 func _get_target(angle := 0.0)->Goblin:

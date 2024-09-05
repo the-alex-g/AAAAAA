@@ -290,7 +290,7 @@ animations = [{
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_yk8in"]
-size = Vector2(6, 4)
+size = Vector2(8, 5)
 
 [node name="Goblin" type="CharacterBody2D"]
 collision_layer = 2
@@ -338,7 +338,7 @@ collision_layer = 2
 collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="HitArea"]
-position = Vector2(3, 0)
+position = Vector2(1, 0)
 shape = SubResource("RectangleShape2D_yk8in")
 
 [node name="RayCast2D" type="RayCast2D" parent="."]
