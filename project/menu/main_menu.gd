@@ -11,6 +11,12 @@ var _total_rounds := -1
 @onready var _main_menu_options : GridContainer = $MainMenuOptions
 
 
+func _ready() -> void:
+	if OS.get_name() == "Web":
+		$MainMenuOptions/QuitLabel.hide()
+		$MainMenuOptions/BackRect.hide()
+
+
 func _input(event:InputEvent)->void:
 	if event is InputEventJoypadButton:
 		if event.pressed and visible:
@@ -29,7 +35,8 @@ func _resolve_main_menu_event(event:InputEventJoypadButton)->void:
 			JOY_BUTTON_START:
 				_start_game()
 			JOY_BUTTON_BACK:
-				get_tree().quit()
+				if OS.get_name() != "Web":
+					get_tree().quit()
 			JOY_BUTTON_X:
 				if DisplayServer.window_get_mode() == DisplayServer.WINDOW_MODE_WINDOWED:
 					DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
