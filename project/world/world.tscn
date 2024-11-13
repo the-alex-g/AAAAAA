@@ -21,7 +21,6 @@ layer_0/tile_data = PackedInt32Array(917504, 327680, 1, 917505, 327680, 1, 91750
 [node name="Players" type="Node2D" parent="."]
 
 [node name="HUD" parent="." instance=ExtResource("3_5j0m0")]
-round_length = 5
 
 [node name="TotemSpawnTimer" type="Timer" parent="."]
 one_shot = true
