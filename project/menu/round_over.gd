@@ -6,18 +6,48 @@ const WIN_GEM_SHADER_PATH := "res://world/win_gem.gdshader"
 const WIN_GEM_IMAGE_PATH := "res://world/win_gem.png"
 
 @onready var _round_over_head : TextureRect = $WinnerHead
-@onready var _win_gem_container : GridContainer = $WinGemContainer
+@onready var _win_label_container : VBoxContainer = $WinLabelContainer
 @onready var _end_game_label : Label = $EndGameLabel
+@onready var _round_indicator : Label = $RoundIndicator
+
+var _wins_by_color := {}
 
 
-func end_round(winning_colors:Array[Color])->void:
+func end_round(winning_colors:Array[Color], rounds_elapsed: int, total_rounds: int)->void:
 	show()
 	set_colors(winning_colors)
-	add_win_gem(winning_colors)
+	_update_wins(winning_colors)
+	
+	if total_rounds > 0:
+		_round_indicator.text = "Round %d/%d" % [rounds_elapsed, total_rounds]
+	else:
+		_round_indicator.text = ""
+
+
+func _update_wins(colors: Array[Color]) -> void:
+	for color in colors:
+		if color in _wins_by_color:
+			_wins_by_color[color] += 1
+		else:
+			_wins_by_color[color] = 1
+	_update_win_labels()
+
+
+func _update_win_labels() -> void:
+	for child in _win_label_container.get_children():
+		child.queue_free()
+	for color in _wins_by_color.keys():
+		var label := Label.new()
+		label.modulate = color
+		label.text = "%d Win%s" % [_wins_by_color[color], "" if _wins_by_color[color] == 1 else "s"]
+		_win_label_container.add_child(label)
 
 
 func end_game(winning_colors:Array[Color])->void:
-	end_round(winning_colors)
+	show()
+	_round_indicator.text = ""
+	set_colors(winning_colors)
+	_wins_by_color.clear()
 	_end_game_label.show()
 
 
@@ -35,40 +65,7 @@ func set_colors(colors:Array[Color])->void:
 	_round_over_head.material = new_material
 
 
-func add_win_gem(colors:Array[Color]) -> void:
-	var new_material := ShaderMaterial.new()
-	new_material.shader = load(WIN_GEM_SHADER_PATH)
-	
-	_set_shader_colors(new_material, colors)
-	
-	_create_win_gem_with_material(new_material)
-
-
 func _set_shader_colors(shader_material:ShaderMaterial, colors:Array[Color])->void:
 	shader_material.set_shader_parameter("segments", colors.size())
 	for i in colors.size():
 		shader_material.set_shader_parameter("color" + str(i + 1), colors[i])
-
-
-func _create_win_gem_with_material(gem_material:ShaderMaterial)->void:
-	var win_gem := TextureRect.new()
-	win_gem.texture = load(WIN_GEM_IMAGE_PATH)
-	win_gem.material = gem_material
-	_win_gem_container.add_child(win_gem)
-
-
-func clear_win_gems()->void:
-	for win_gem in _win_gem_container.get_children():
-		win_gem.queue_free()
-
-
-func update_gem_colors(from:Color, to:Color)->void:
-	if from == Color(0.0, 0.0, 0.0, 0.0):
-		return
-	
-	for child in _win_gem_container.get_children():
-		for i in 4:
-			if child.material.get_shader_parameter("color" + str(i + 1)) != null:
-				var color:Color = child.material.get_shader_parameter("color" + str(i + 1))
-				if color == from:
-					child.material.set_shader_parameter("color" + str(i + 1), to)

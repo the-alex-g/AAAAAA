@@ -19,6 +19,7 @@ var _pause_menu_open := false
 var _total_rounds := -1
 var _rounds_elapsed := 0
 var _main_menu_open := false
+var _final_round := false
 
 @onready var _label_container : VBoxContainer = $Control/ScoreContainer
 @onready var _game_timer : Timer = $Control/GameTimer
@@ -39,7 +40,10 @@ func _input(event:InputEvent)->void:
 			_open_main_menu()
 		
 		elif _pending_new_round:
-			_reset_round()
+			if _final_round:
+				_end_game()
+			else:
+				_reset_round()
 		
 		elif event.button_index == JOY_BUTTON_BACK and not _pause_menu_open and not _main_menu_open:
 			_show_pause_menu()
@@ -128,11 +132,8 @@ func _on_game_timer_timeout()->void:
 	if _total_rounds > _rounds_elapsed:
 		_rounds_elapsed += 1
 		if _rounds_elapsed == _total_rounds:
-			_end_game()
-		else:
-			_end_round()
-	else:
-		_end_round()
+			_final_round = true
+	_end_round()
 
 
 func _log_wins()->void:
@@ -155,7 +156,8 @@ func _end_game()->void:
 		if _wins[player] == most_wins:
 			winner_colors.append(_score_labels[player].modulate)
 	
-	_round_over_overlay.end_game(_get_winner_colors())
+	_round_over_overlay.end_game(winner_colors)
+	_final_round = false
 	_reset_wins()
 	
 	await get_tree().create_timer(2.0).timeout
@@ -169,7 +171,7 @@ func _reset_wins()->void:
 
 func _end_round()->void:
 	get_tree().paused = true
-	_round_over_overlay.end_round(_get_winner_colors())
+	_round_over_overlay.end_round(_get_winner_colors(), _rounds_elapsed, _total_rounds)
 	
 	await get_tree().create_timer(1.0).timeout
 	
@@ -198,6 +200,7 @@ func _get_winning_score()->int:
 
 func _reset_round(spawn_round := false)->void:
 	get_tree().paused = false
+	
 	_pending_new_round = false
 	_pending_new_game = false
 	_round_over_overlay.start_new_round()
@@ -217,7 +220,6 @@ func _on_main_menu_game_started(round_count:int)->void:
 	_rounds_elapsed = 0
 	_player_count = 0
 	new_game_started.emit()
-	_round_over_overlay.clear_win_gems()
 	_reset_wins()
 	_reset_round(true)
 	_total_rounds = round_count
