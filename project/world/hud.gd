@@ -63,6 +63,8 @@ func _open_main_menu()->void:
 	_scores.clear()
 	
 	_round_over_overlay.hide()
+	_game_timer.stop()
+	_round_over_overlay.reset_wins()
 	
 	_main_menu_open = true
 	_main_menu.show()

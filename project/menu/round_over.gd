@@ -33,6 +33,10 @@ func _update_wins(colors: Array[Color]) -> void:
 	_update_win_labels()
 
 
+func reset_wins() -> void:
+	_wins_by_color.clear()
+
+
 func _update_win_labels() -> void:
 	for child in _win_label_container.get_children():
 		child.queue_free()
@@ -47,7 +51,7 @@ func end_game(winning_colors:Array[Color])->void:
 	show()
 	_round_indicator.text = ""
 	set_colors(winning_colors)
-	_wins_by_color.clear()
+	reset_wins()
 	_end_game_label.show()
 
 
