@@ -9,12 +9,14 @@ const WIN_GEM_IMAGE_PATH := "res://world/win_gem.png"
 @onready var _win_label_container : VBoxContainer = $WinLabelContainer
 @onready var _end_game_label : Label = $EndGameLabel
 @onready var _round_indicator : Label = $RoundIndicator
+@onready var _animation_player : AnimationPlayer = $AnimationPlayer
 
 var _wins_by_color := {}
 
 
 func end_round(winning_colors:Array[Color], rounds_elapsed: int, total_rounds: int)->void:
 	show()
+	_reset_instrux()
 	set_colors(winning_colors)
 	_update_wins(winning_colors)
 	
@@ -49,10 +51,16 @@ func _update_win_labels() -> void:
 
 func end_game(winning_colors:Array[Color])->void:
 	show()
+	_reset_instrux()
 	_round_indicator.text = ""
 	set_colors(winning_colors)
 	reset_wins()
 	_end_game_label.show()
+
+
+func _reset_instrux() -> void:
+	_animation_player.seek(0)
+	_animation_player.play("fade_in_instrux")
 
 
 func start_new_round()->void:
