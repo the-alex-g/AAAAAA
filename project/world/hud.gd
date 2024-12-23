@@ -147,6 +147,7 @@ func _log_wins()->void:
 
 func _end_game()->void:
 	get_tree().paused = true
+	_pending_new_round = false
 	
 	var most_wins := 0
 	for winner in _wins:

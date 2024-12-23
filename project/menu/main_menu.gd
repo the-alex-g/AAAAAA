@@ -63,7 +63,7 @@ func _update_game_length_label()->void:
 	elif _total_rounds == 1:
 		_game_length_label.text = "1 round"
 	else:
-		_game_length_label.text = str(_total_rounds) + " rounds"
+		_game_length_label.text = "%d rounds" % [_total_rounds]
 
 
 func _start_game()->void:

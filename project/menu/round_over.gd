@@ -2,8 +2,6 @@ class_name RoundOverMenu
 extends Control
 
 const HEAD_SHADER_PATH := "res://world/win_banner.gdshader"
-const WIN_GEM_SHADER_PATH := "res://world/win_gem.gdshader"
-const WIN_GEM_IMAGE_PATH := "res://world/win_gem.png"
 
 @onready var _round_over_head : TextureRect = $WinnerHead
 @onready var _win_label_container : VBoxContainer = $WinLabelContainer
