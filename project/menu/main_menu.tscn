@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://d0bstd4h3spyx"]
+[gd_scene load_steps=11 format=3 uid="uid://d0bstd4h3spyx"]
 
 [ext_resource type="Texture2D" uid="uid://47rfdws3a60" path="res://world/button_images.png" id="1_1tl0d"]
 [ext_resource type="Theme" uid="uid://b6d3ukelyderc" path="res://world/theme.tres" id="1_ikwkh"]
@@ -24,6 +24,10 @@ region = Rect2(16, 0, 8, 8)
 [sub_resource type="AtlasTexture" id="AtlasTexture_rkxy7"]
 atlas = ExtResource("1_1tl0d")
 region = Rect2(0, 8, 8, 8)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dm50n"]
+atlas = ExtResource("1_1tl0d")
+region = Rect2(0, 0, 8, 8)
 
 [node name="MainMenu" type="ColorRect"]
 process_mode = 3
@@ -123,6 +127,18 @@ expand_mode = 3
 [node name="FullscreenLabel" type="Label" parent="MainMenuOptions"]
 layout_mode = 2
 text = "fullscreen"
+horizontal_alignment = 1
+
+[node name="MapEditorRect" type="TextureRect" parent="MainMenuOptions"]
+visible = false
+layout_mode = 2
+texture = SubResource("AtlasTexture_dm50n")
+expand_mode = 3
+
+[node name="MapEditorLabel" type="Label" parent="MainMenuOptions"]
+visible = false
+layout_mode = 2
+text = "map editor"
 horizontal_alignment = 1
 
 [node name="ControlInfo" parent="." instance=ExtResource("4_xroms")]

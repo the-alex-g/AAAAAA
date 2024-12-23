@@ -3,7 +3,7 @@ extends CanvasLayer
 signal new_round_started
 signal new_game_started
 
-@export var round_length := 30
+@export var round_length := 1
 
 var _scores := {}
 var _score_labels := {}

@@ -32,7 +32,7 @@ var _last_map_loaded := -1
 var _in_spawn_map := true
 
 @onready var _player_container : Node2D = $Players
-@onready var _tile_map : TileMap = $TileMap
+@onready var _tile_layer : TileMapLayer = $TileLayer
 @onready var _totem_spawn_timer : Timer = $TotemSpawnTimer
 
 
@@ -43,8 +43,6 @@ func _ready()->void:
 		_save_map_as_spawn()
 	elif map_status == "run":
 		_save_map_as_current()
-	
-	_load_map(true)
 
 
 func _input(event:InputEvent)->void:
@@ -66,9 +64,9 @@ func _input(event:InputEvent)->void:
 func _find_spawn_points()->void:
 	_spawn_points.clear()
 	
-	for tile_position in _tile_map.get_used_cells(0):
+	for tile_position in _tile_layer.get_used_cells():
 		if tile_position.y < 10 and tile_position.x >= 0 and tile_position.x < 20:
-			if _tile_map.get_cell_tile_data(0, tile_position + Vector2i.UP) == null:
+			if _tile_layer.get_cell_tile_data(tile_position + Vector2i.UP) == null:
 				_spawn_points.append(Vector2i(tile_position.x * 8 + 4, tile_position.y * 8))
 
 
@@ -77,7 +75,7 @@ func _get_spawn_point()->Vector2:
 	
 	for object in _player_container.get_children():
 		if object is Goblin:
-			var map_coords := _tile_map.local_to_map(object.position)
+			var map_coords := _tile_layer.local_to_map(object.position)
 			occupied_points.append(Vector2(map_coords.x * 8 + 4, map_coords.y * 8))
 	
 	if is_instance_valid(_totem):
@@ -191,12 +189,15 @@ func _save_map()->void:
 	file.load(MAP_FILE_PATH)
 	
 	var map_index := 0
-	var map := _tile_map.get_used_cells(0)
-	while file.has_section_key("maps", str(map_index)):
-		if file.get_value("maps", str(map_index)) == map:
-			print("map already exists")
-			return
-		map_index += 1
+	var map := _get_map_save_data()
+	if map_to_load == -1:
+		while file.has_section_key("maps", str(map_index)):
+			if file.get_value("maps", str(map_index)) == map:
+				print("map already exists")
+				return
+			map_index += 1
+	else:
+		map_index = map_to_load
 
 	file.set_value("maps", str(map_index), map)
 	
@@ -208,7 +209,7 @@ func _save_map()->void:
 func _save_map_as_spawn()->void:
 	var file := ConfigFile.new()
 	file.load(MAP_FILE_PATH)
-	file.set_value("spawn map", "spawn map", _tile_map.get_used_cells(0))
+	file.set_value("spawn map", "spawn map", _get_map_save_data())
 	file.save(MAP_FILE_PATH)
 	
 	print("map saved as spawn map")
@@ -217,18 +218,41 @@ func _save_map_as_spawn()->void:
 func _save_map_as_current()->void:
 	var file := ConfigFile.new()
 	file.load(MAP_FILE_PATH)
-	file.set_value("current map", "current map", _tile_map.get_used_cells(0))
+	file.set_value("current map", "current map", _get_map_save_data())
 	file.save(MAP_FILE_PATH)
 
 
+# Use run length compression to get map data
+func _get_map_save_data() -> Array[int]:
+	var data : Array[int] = []
+	var counting := "none"
+	var count := 0
+	for y in 24:
+		for x in range(-1, 25):
+			if _tile_layer.get_cell_source_id(Vector2i(x, y)) == -1:
+				if counting == "tiles":
+					counting = "none"
+					data.append(count)
+					count = 0
+				count += 1
+			else:
+				if counting == "none":
+					counting = "tiles"
+					data.append(count)
+					count = 0
+				count += 1
+	data.append(count)
+	return data
+
+
 func _load_map(spawn_map := false)->void:
-	_tile_map.clear()
+	_tile_layer.clear()
 	_in_spawn_map = spawn_map
 	
 	var file := ConfigFile.new()
 	file.load(MAP_FILE_PATH)
 	
-	var map : Array[Vector2i] = []
+	var map : Array = []
 	
 	if spawn_map:
 		map = file.get_value("spawn map", "spawn map")
@@ -248,10 +272,25 @@ func _load_map(spawn_map := false)->void:
 	else:
 		map = file.get_value("maps", str(map_to_load))
 	
-	_tile_map.set_cells_terrain_connect(0, map, 0, 0)
+	_tile_layer.set_cells_terrain_connect(_decompress_map(map), 0, 0)
+	
+	_tile_layer.update_internals()
 	
 	_find_spawn_points()
 	_spawn_totem()
+
+
+func _decompress_map(map: Array[int]) -> Array[Vector2i]:
+	var cell_map : Array[Vector2i] = []
+	var placing := false
+	var run_length := 0
+	for run in map:
+		for x in run:
+			if placing:
+				cell_map.append(Vector2i(run_length % 26 - 1, floori(run_length / 26.0)))
+			run_length += 1
+		placing = not placing
+	return cell_map
 
 
 func _on_hud_new_round_started()->void:
