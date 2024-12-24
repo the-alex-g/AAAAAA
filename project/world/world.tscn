@@ -1,7 +1,7 @@
-[gd_scene load_steps=4 format=4 uid="uid://drs35ir7tme66"]
+[gd_scene load_steps=4 format=3 uid="uid://drs35ir7tme66"]
 
 [ext_resource type="Script" path="res://world/world.gd" id="1_2vkgl"]
-[ext_resource type="TileSet" uid="uid://qydm831wiegm" path="res://world/platform_tiles.tres" id="2_ujo6d"]
+[ext_resource type="PackedScene" uid="uid://bf58oyjk7mghq" path="res://board.tscn" id="2_pcwnc"]
 [ext_resource type="PackedScene" uid="uid://cmiybl3yy4eh0" path="res://world/hud.tscn" id="3_5j0m0"]
 
 [node name="World" type="Node2D"]
@@ -12,11 +12,7 @@ offset_right = 160.0
 offset_bottom = 160.0
 color = Color(0, 0, 0, 1)
 
-[node name="TileLayer" type="TileMapLayer" parent="."]
-texture_filter = 1
-use_parent_material = true
-tile_map_data = PackedByteArray("AAAAAA4AAAAFAAEAAAABAA4AAAAFAAEAAAACAA4AAAAFAAEAAAADAA4AAAAFAAEAAAAEAA4AAAAFAAEAAAAFAA4AAAADAAEAAAAPAA4AAAABAAEAAAAQAA4AAAAFAAEAAAARAA4AAAAFAAEAAAASAA4AAAAFAAEAAAATAA4AAAAFAAEAAAAUAA4AAAADAAEAAAD//w4AAAABAAEAAAADAAsAAAABAAEAAAAEAAsAAAAFAAEAAAAPAAsAAAABAAEAAAAQAAsAAAAFAAEAAAARAAsAAAADAAEAAAAMAAkAAAAFAAEAAAANAAkAAAADAAEAAAALAAkAAAABAAEAAAAFAAsAAAADAAEAAAAGAAgAAAABAAEAAAAHAAgAAAAFAAEAAAAIAAgAAAADAAEAAAALAAUAAAABAAEAAAAMAAUAAAADAAEAAAAPAAcAAAABAAEAAAAQAAcAAAADAAEAAAAFAAUAAAADAAEAAAAEAAUAAAAFAAEAAAADAAUAAAAFAAEAAAACAAUAAAABAAEAAAA=")
-tile_set = ExtResource("2_ujo6d")
+[node name="TileLayer" parent="." instance=ExtResource("2_pcwnc")]
 
 [node name="Players" type="Node2D" parent="."]
 

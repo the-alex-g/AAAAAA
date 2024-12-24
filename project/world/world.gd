@@ -4,7 +4,6 @@ signal player_joined(index, color)
 signal player_color_changed(index, color, original_color)
 signal player_died(index)
 
-
 const ACTIONS := {
 	"jump":JOY_BUTTON_A,
 	"punch":JOY_BUTTON_X,
@@ -18,31 +17,17 @@ const COLORS := {
 	Color.GREEN:Color.AQUAMARINE,
 	Color.MAGENTA:Color.MEDIUM_ORCHID,
 }
-const MAP_FILE_PATH := "res://maps.cfg"
-
-@export_enum("load", "save", "run", "save as spawn") var map_status := "load"
-@export var map_to_load := -1
 
 var player_count := 0
 var _players_added := []
 var _used_colors := []
 var _spawn_points : Array[Vector2i] = []
 var _totem : Totem
-var _last_map_loaded := -1
 var _in_spawn_map := true
 
 @onready var _player_container : Node2D = $Players
 @onready var _tile_layer : TileMapLayer = $TileLayer
 @onready var _totem_spawn_timer : Timer = $TotemSpawnTimer
-
-
-func _ready()->void:
-	if map_status == "save":
-		_save_map()
-	elif map_status == "save as spawn":
-		_save_map_as_spawn()
-	elif map_status == "run":
-		_save_map_as_current()
 
 
 func _input(event:InputEvent)->void:
@@ -184,115 +169,6 @@ func _spawn_totem()->void:
 	_totem.used.connect(_on_totem_used)
 
 
-func _save_map()->void:
-	var file := ConfigFile.new()
-	file.load(MAP_FILE_PATH)
-	
-	var map_index := 0
-	var map := _get_map_save_data()
-	if map_to_load == -1:
-		while file.has_section_key("maps", str(map_index)):
-			if file.get_value("maps", str(map_index)) == map:
-				print("map already exists")
-				return
-			map_index += 1
-	else:
-		map_index = map_to_load
-
-	file.set_value("maps", str(map_index), map)
-	
-	file.save(MAP_FILE_PATH)
-	
-	print("map saved")
-
-
-func _save_map_as_spawn()->void:
-	var file := ConfigFile.new()
-	file.load(MAP_FILE_PATH)
-	file.set_value("spawn map", "spawn map", _get_map_save_data())
-	file.save(MAP_FILE_PATH)
-	
-	print("map saved as spawn map")
-
-
-func _save_map_as_current()->void:
-	var file := ConfigFile.new()
-	file.load(MAP_FILE_PATH)
-	file.set_value("current map", "current map", _get_map_save_data())
-	file.save(MAP_FILE_PATH)
-
-
-# Use run length compression to get map data
-func _get_map_save_data() -> Array[int]:
-	var data : Array[int] = []
-	var counting := "none"
-	var count := 0
-	for y in 24:
-		for x in range(-1, 25):
-			if _tile_layer.get_cell_source_id(Vector2i(x, y)) == -1:
-				if counting == "tiles":
-					counting = "none"
-					data.append(count)
-					count = 0
-				count += 1
-			else:
-				if counting == "none":
-					counting = "tiles"
-					data.append(count)
-					count = 0
-				count += 1
-	data.append(count)
-	return data
-
-
-func _load_map(spawn_map := false)->void:
-	_tile_layer.clear()
-	_in_spawn_map = spawn_map
-	
-	var file := ConfigFile.new()
-	file.load(MAP_FILE_PATH)
-	
-	var map : Array = []
-	
-	if spawn_map:
-		map = file.get_value("spawn map", "spawn map")
-	elif map_status == "run":
-		map = file.get_value("current map", "current map")
-	elif map_to_load == -1:
-		var number_of_maps := 0
-		while file.has_section_key("maps", str(number_of_maps)):
-			number_of_maps += 1
-		
-		var map_index := randi() % number_of_maps
-		while number_of_maps > 1 and _last_map_loaded == map_index:
-			map_index = randi() % number_of_maps
-		
-		map = file.get_value("maps", str(map_index))
-		_last_map_loaded = map_index
-	else:
-		map = file.get_value("maps", str(map_to_load))
-	
-	_tile_layer.set_cells_terrain_connect(_decompress_map(map), 0, 0)
-	
-	_tile_layer.update_internals()
-	
-	_find_spawn_points()
-	_spawn_totem()
-
-
-func _decompress_map(map: Array[int]) -> Array[Vector2i]:
-	var cell_map : Array[Vector2i] = []
-	var placing := false
-	var run_length := 0
-	for run in map:
-		for x in run:
-			if placing:
-				cell_map.append(Vector2i(run_length % 26 - 1, floori(run_length / 26.0)))
-			run_length += 1
-		placing = not placing
-	return cell_map
-
-
 func _on_hud_new_round_started()->void:
 	_load_map()
 	
@@ -310,4 +186,18 @@ func _on_hud_new_game_started()->void:
 	for player in _player_container.get_children():
 		player.queue_free()
 	
-	_load_map(true)
+	_load_spawn_map()
+
+
+func _load_map() -> void:
+	_in_spawn_map = false
+	_tile_layer.load_map()
+	_find_spawn_points()
+	_spawn_totem()
+
+
+func _load_spawn_map() -> void:
+	_in_spawn_map = true
+	_tile_layer.load_spawn_map()
+	_find_spawn_points()
+	_spawn_totem()
