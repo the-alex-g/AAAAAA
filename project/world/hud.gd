@@ -3,7 +3,7 @@ extends CanvasLayer
 signal new_round_started
 signal new_game_started
 
-@export var round_length := 1
+@export var round_length := 30
 
 var _scores := {}
 var _score_labels := {}
@@ -96,9 +96,8 @@ func _close_pause_menu()->void:
 		_spawn_round_label.show()
 
 
-func _on_world_player_color_changed(index:int, color:Color, former_color:Color)->void:
+func _on_world_player_color_changed(index:int, color:Color)->void:
 	_update_label_color(index, color)
-	_round_over_overlay.update_gem_colors(former_color, color)
 
 
 func _on_world_player_died(index:int)->void:
